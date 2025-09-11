@@ -1,0 +1,14 @@
+Variable,Valor normal / típico,Descripción breve
+fixed acidity,4.0 – 15.0 g/dm³ (tinto más ácido que blanco),Ácidos no volátiles como tartárico
+volatile acidity,0.12 – 1.10 g/dm³,Ácidos volátiles (como el acético)
+citric acid,0.0 – 1.0 g/dm³,Contribuye a frescura
+residual sugar,0.6 – 65.0 g/dm³ (más en vinos blancos),Azúcar restante tras fermentación
+chlorides,0.009 – 0.346 g/dm³,Indica presencia de sal
+free sulfur dioxide,1 – 72 mg/dm³ (mayor en blancos),"SO₂ libre, protección antimicrobiana"
+total sulfur dioxide,6 – 440 mg/dm³ (mayor en blancos),Total de SO₂ (libre + ligado)
+density,0.9900 – 1.0040 g/cm³,Relacionado con azúcar y alcohol
+pH,2.9 – 3.9,"Acidez, vinos blancos suelen tener pH más bajo"
+sulphates,0.22 – 1.08 g/dm³,Estabilizador y conservante
+alcohol,8.0 – 14.9 % vol,Mayor alcohol suele estar asociado con mejor calidad
+quality,3 – 9 (según escala del dataset),Calificación subjetiva del vino
+type,'red' o 'white',Tipo de vino (categoría)
