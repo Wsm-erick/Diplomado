@@ -1,0 +1,2357 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{soul}      % strikethrough (\st) support for pandoc >= 3.0.0
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{Tarea\_02}
+    
+    
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@ges}{\let\PY@bf=\textbf\let\PY@it=\textit}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{integrantes}{%
+\section{Integrantes}\label{integrantes}}
+
+    \begin{itemize}
+\tightlist
+\item
+  Centeno Amado Eduardo
+\item
+  Orozpe Frias Erick Adrian
+\item
+  Pineda Gaona Maricruz
+\item
+  Rodríguez Teodores Armando Jair
+\item
+  Velasco Martell~Dayra
+\end{itemize}
+
+    \hypertarget{bibliotecas}{%
+\section{Bibliotecas}\label{bibliotecas}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{1}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Bibliotecas}
+\PY{k+kn}{import} \PY{n+nn}{os}
+\PY{k+kn}{import} \PY{n+nn}{pandas} \PY{k}{as} \PY{n+nn}{pd}
+\PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+
+\PY{c+c1}{\PYZsh{}KS test, ji\PYZhy{}cuadrada}
+\PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{stats} \PY{k+kn}{import} \PY{n}{ks\PYZus{}2samp}\PY{p}{,} \PY{n}{chi2\PYZus{}contingency}
+
+\PY{c+c1}{\PYZsh{}Graficas}
+\PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+\PY{k+kn}{from} \PY{n+nn}{matplotlib} \PY{k+kn}{import} \PY{n}{cycler}
+\PY{k+kn}{import} \PY{n+nn}{seaborn} \PY{k}{as} \PY{n+nn}{sns}
+\PY{k+kn}{import} \PY{n+nn}{plotly}\PY{n+nn}{.}\PY{n+nn}{express} \PY{k}{as} \PY{n+nn}{px}
+\PY{k+kn}{import} \PY{n+nn}{plotly}\PY{n+nn}{.}\PY{n+nn}{graph\PYZus{}objects} \PY{k}{as} \PY{n+nn}{go}
+\PY{k+kn}{from} \PY{n+nn}{plotly}\PY{n+nn}{.}\PY{n+nn}{subplots} \PY{k+kn}{import} \PY{n}{make\PYZus{}subplots}
+
+\PY{c+c1}{\PYZsh{}Valores atipicos}
+\PY{k+kn}{from} \PY{n+nn}{pyod}\PY{n+nn}{.}\PY{n+nn}{models}\PY{n+nn}{.}\PY{n+nn}{knn} \PY{k+kn}{import} \PY{n}{KNN}
+\PY{k+kn}{from} \PY{n+nn}{pyod}\PY{n+nn}{.}\PY{n+nn}{models}\PY{n+nn}{.}\PY{n+nn}{iforest} \PY{k+kn}{import} \PY{n}{IForest}
+\PY{k+kn}{from} \PY{n+nn}{pyod}\PY{n+nn}{.}\PY{n+nn}{models}\PY{n+nn}{.}\PY{n+nn}{mcd} \PY{k+kn}{import} \PY{n}{MCD}
+
+\PY{c+c1}{\PYZsh{}Valores ausentes}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{experimental} \PY{k+kn}{import} \PY{n}{enable\PYZus{}iterative\PYZus{}imputer}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{impute} \PY{k+kn}{import} \PY{n}{IterativeImputer}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{ensemble} \PY{k+kn}{import} \PY{n}{RandomForestRegressor}\PY{p}{,} \PY{n}{RandomForestClassifier}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{linear\PYZus{}model} \PY{k+kn}{import} \PY{n}{BayesianRidge}\PY{p}{,} \PY{n}{LogisticRegression}
+\PY{k+kn}{from} \PY{n+nn}{sklearn}\PY{n+nn}{.}\PY{n+nn}{preprocessing} \PY{k+kn}{import} \PY{n}{LabelEncoder}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{2}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Configurar Paleta}
+\PY{n}{PALETA} \PY{o}{=} \PY{n}{sns}\PY{o}{.}\PY{n}{color\PYZus{}palette}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{flare}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{set\PYZus{}theme}\PY{p}{(}\PY{n}{style}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{whitegrid}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{palette}\PY{o}{=}\PY{n}{PALETA}\PY{p}{)}   \PY{c+c1}{\PYZsh{} Seaborn global}
+\PY{n}{plt}\PY{o}{.}\PY{n}{style}\PY{o}{.}\PY{n}{use}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{seaborn\PYZhy{}v0\PYZus{}8\PYZhy{}whitegrid}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{rcParams}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{axes.prop\PYZus{}cycle}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{cycler}\PY{p}{(}\PY{n}{color}\PY{o}{=}\PY{n}{PALETA}\PY{o}{.}\PY{n}{as\PYZus{}hex}\PY{p}{(}\PY{p}{)}\PY{p}{)}  \PY{c+c1}{\PYZsh{} Matplotlib global}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{cargar-dataset}{%
+\section{Cargar Dataset}\label{cargar-dataset}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{3}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{ruta}\PY{p}{(}\PY{n}{folder}\PY{p}{,} \PY{n}{file}\PY{p}{,} \PY{n}{user}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Wsm\PYZhy{}erick}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{main}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Diplomado\PYZhy{}Ciencia\PYZhy{}de\PYZhy{}Datos/refs/heads/main}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{:}
+    \PY{k}{return} \PY{n}{os}\PY{o}{.}\PY{n}{path}\PY{o}{.}\PY{n}{join}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{https://raw.githubusercontent.com}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{user}\PY{p}{,} \PY{n}{main}\PY{p}{,} \PY{n}{folder}\PY{p}{,} \PY{n}{file}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{url} \PY{o}{=} \PY{n}{ruta}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Modulo\PYZhy{}I/Datasets}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{wine\PYZus{}quality.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{n}{url}\PY{p}{,} \PY{n}{encoding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{utf\PYZhy{}8}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{df}\PY{o}{.}\PY{n}{head}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{4}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+   fixed acidity  volatile acidity  citric acid  residual sugar  chlorides  \textbackslash{}
+0            7.4              0.70         0.00             1.9      0.076
+1            7.8              0.88         0.00             2.6      0.098
+2            7.8              0.76         0.04             2.3      0.092
+3            NaN              0.28         0.56             1.9      0.075
+4            7.4              0.70          NaN             1.9      0.076
+
+   free sulfur dioxide  total sulfur dioxide  density    pH  sulphates  \textbackslash{}
+0                 11.0                  34.0   0.9978  3.51       0.56
+1                 25.0                  67.0   0.9968  3.20       0.68
+2                 15.0                  54.0   0.9970  3.26       0.65
+3                 17.0                  60.0   0.9980  3.16       0.58
+4                 11.0                  34.0   0.9978  3.51       0.56
+
+   alcohol  quality type
+0      9.4      5.0  red
+1      9.8      5.0  red
+2      9.8      5.0  red
+3      9.8      6.0  NaN
+4      9.4      5.0  red
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{investiga-a-quuxe9-se-refiere-cada-variable-del-conjunto-de-datos-y-sus-valores-normales-de-referencia.}{%
+\subsection{1.- Investiga a qué se refiere cada variable del conjunto de
+datos y sus valores normales de
+referencia.}\label{investiga-a-quuxe9-se-refiere-cada-variable-del-conjunto-de-datos-y-sus-valores-normales-de-referencia.}}
+
+    Se encontró la siguiente informacion referente a los valores normales
+para cada una de las variables. Con base en esta informacion, se tomara
+la decision sobre el tratado de los valores atipicos que se lleguen a
+encontrar en la base.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{url} \PY{o}{=} \PY{n}{ruta}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Modulo\PYZhy{}I/Datasets}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Variables\PYZus{}del\PYZus{}vino.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{description} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{read\PYZus{}csv}\PY{p}{(}\PY{n}{url}\PY{p}{,} \PY{n}{encoding}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{utf\PYZhy{}8}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{description}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{5}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                Variable                          Valor normal / típico  \textbackslash{}
+0          fixed acidity  4.0 – 15.0 g/dm³ (tinto más ácido que blanco)
+1       volatile acidity                              0.12 – 1.10 g/dm³
+2            citric acid                                0.0 – 1.0 g/dm³
+3         residual sugar        0.6 – 65.0 g/dm³ (más en vinos blancos)
+4              chlorides                            0.009 – 0.346 g/dm³
+5    free sulfur dioxide               1 – 72 mg/dm³ (mayor en blancos)
+6   total sulfur dioxide              6 – 440 mg/dm³ (mayor en blancos)
+7                density                          0.9900 – 1.0040 g/cm³
+8                     pH                                      2.9 – 3.9
+9              sulphates                              0.22 – 1.08 g/dm³
+10               alcohol                               8.0 – 14.9 \% vol
+11               quality               3 – 9 (según escala del dataset)
+12                  type                                'red' o 'white'
+
+                                    Descripción breve
+0                  Ácidos no volátiles como tartárico
+1                  Ácidos volátiles (como el acético)
+2                               Contribuye a frescura
+3                   Azúcar restante tras fermentación
+4                             Indica presencia de sal
+5                SO₂ libre, protección antimicrobiana
+6                       Total de SO₂ (libre + ligado)
+7                    Relacionado con azúcar y alcohol
+8      Acidez, vinos blancos suelen tener pH más bajo
+9                         Estabilizador y conservante
+10  Mayor alcohol suele estar asociado con mejor c{\ldots}
+11                    Calificación subjetiva del vino
+12                           Tipo de vino (categoría)
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{6}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{valores\PYZus{}tipicos} \PY{o}{=} \PY{p}{\PYZob{}}\PY{n}{x}\PY{p}{:} \PY{k+kc}{None} \PY{k}{for} \PY{n}{x} \PY{o+ow}{in} \PY{n+nb}{set}\PY{p}{(}\PY{n}{description}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Variable}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n+nb}{set}\PY{p}{(}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{type}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{)}\PY{p}{\PYZcb{}}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{n+nb}{list}\PY{p}{(}\PY{n}{valores\PYZus{}tipicos}\PY{o}{.}\PY{n}{keys}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+['residual sugar', 'alcohol', 'citric acid', 'chlorides', 'fixed acidity',
+'total sulfur dioxide', 'sulphates', 'density', 'free sulfur dioxide', 'pH',
+'volatile acidity', 'quality']
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{7}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{valores\PYZus{}tipicos} \PY{o}{=} \PY{p}{\PYZob{}}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{fixed acidity}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{l+m+mi}{15}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g/dm³}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{volatile acidity}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mf}{0.12}\PY{p}{,}\PY{l+m+mf}{1.1}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g/dm³}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{citric acid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g/dm³}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{residual sugar}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mf}{0.6}\PY{p}{,}\PY{l+m+mi}{65}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g/dm³}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{chlorides}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mf}{0.009}\PY{p}{,}\PY{l+m+mf}{0.346}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g/dm³}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{free sulfur dioxide}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{1}\PY{p}{,}\PY{l+m+mi}{72}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mg/dm³}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total sulfur dioxide}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{6}\PY{p}{,}\PY{l+m+mi}{440}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mg/dm³}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{density}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mf}{0.99}\PY{p}{,}\PY{l+m+mf}{1.0040}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g/cm³}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{pH}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mf}{2.9}\PY{p}{,}\PY{l+m+mf}{3.9}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sulphates}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mf}{0.22}\PY{p}{,}\PY{l+m+mf}{1.08}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{g/dm³}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alcohol}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mf}{14.9}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{vol}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{9}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZhy{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{p}{\PYZcb{}}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{8}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{f\PYZus{}tip}\PY{p}{(}\PY{n}{x}\PY{p}{:} \PY{n+nb}{float}\PY{p}{,} \PY{n}{xmin}\PY{p}{:} \PY{n+nb}{float}\PY{p}{,} \PY{n}{xmax}\PY{p}{:} \PY{n+nb}{float}\PY{p}{)}\PY{p}{:}
+  \PY{k}{return} \PY{l+m+mi}{1} \PY{k}{if} \PY{n}{x} \PY{o}{\PYZgt{}}\PY{o}{=} \PY{n}{xmin} \PY{o+ow}{and} \PY{n}{x} \PY{o}{\PYZlt{}}\PY{o}{=} \PY{n}{xmax} \PY{k}{else} \PY{l+m+mi}{0}
+
+\PY{n}{N} \PY{o}{=} \PY{n}{df}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\PY{n}{data} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+\PY{k}{for} \PY{n}{x}\PY{p}{,} \PY{p}{(}\PY{n}{xmin}\PY{p}{,} \PY{n}{xmax}\PY{p}{,} \PY{n}{unidad}\PY{p}{)} \PY{o+ow}{in} \PY{n}{valores\PYZus{}tipicos}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+  \PY{n}{n} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{x}\PY{p}{]}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{k}{lambda} \PY{n}{y}\PY{p}{:} \PY{n}{f\PYZus{}tip}\PY{p}{(}\PY{n}{y}\PY{p}{,} \PY{n}{xmin}\PY{p}{,} \PY{n}{xmax}\PY{p}{)}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+  \PY{n}{nulos} \PY{o}{=} \PY{n}{df}\PY{p}{[}\PY{n}{x}\PY{p}{]}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+  \PY{n}{data}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{p}{[}\PY{n}{x}\PY{p}{,} \PY{n}{unidad}\PY{p}{,} \PY{n}{xmin}\PY{p}{,} \PY{n}{xmax}\PY{p}{,} \PY{n}{nulos}\PY{p}{,} \PY{n}{n}\PY{p}{,} \PY{n}{N}\PY{o}{\PYZhy{}}\PY{n}{n}\PY{o}{\PYZhy{}}\PY{n}{nulos}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{df\PYZus{}val\PYZus{}atipicos} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{data}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Variable}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Unidad}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Límite Inf}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Límite Sup}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Valores Ausentes}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Valores Típicos}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Valores Atípicos}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{display}\PY{p}{(}\PY{n}{df\PYZus{}val\PYZus{}atipicos}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+                Variable  Unidad  Límite Inf  Límite Sup  Valores Ausentes  \textbackslash{}
+0          fixed acidity   g/dm³       4.000      15.000               995   
+1       volatile acidity   g/dm³       0.120       1.100               949   
+2            citric acid   g/dm³       0.000       1.000               454   
+3         residual sugar   g/dm³       0.600      65.000               200   
+4              chlorides   g/dm³       0.009       0.346                 0   
+5    free sulfur dioxide  mg/dm³       1.000      72.000               138   
+6   total sulfur dioxide  mg/dm³       6.000     440.000               744   
+7                density   g/cm³       0.990       1.004                 0   
+8                     pH       -       2.900       3.900               180   
+9              sulphates   g/dm³       0.220       1.080               626   
+10               alcohol     vol       8.000      14.900               183   
+11               quality       -       3.000       9.000               591   
+
+    Valores Típicos  Valores Atípicos  
+0              5497                 5  
+1              5517                31  
+2              6042                 1  
+3              6296                 1  
+4              6479                18  
+5              6267                92  
+6              5753                 0  
+7              6149               348  
+8              6238                79  
+9              5836                35  
+10             6314                 0  
+11             5906                 0  
+    \end{Verbatim}
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{9}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Valores atípicos con respecto a los valores normales de la variable:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{df\PYZus{}val\PYZus{}atipicos}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Valores Atípicos}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Valores atípicos con respecto a los valores normales de la variable: 610
+    \end{Verbatim}
+
+    \hypertarget{existen-valores-atuxedpicos-valores-ausentes}{%
+\subsection{2.- ¿Existen valores atípicos? ¿Valores
+ausentes?}\label{existen-valores-atuxedpicos-valores-ausentes}}
+
+    Sí, como vemos en las celdas anteriores si hay valores ausentes y
+valores atípicos. A continuación vamos a revisar más a detalle los
+valores ausentes e imputaremos por el método de MICE los valores nulos
+para poder revisar los valores atípicos, cuando el dataset no contenga
+valores nulos.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{10}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{var\PYZus{}cat} \PY{o}{=} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{type}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+\PY{n}{var\PYZus{}num} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{set}\PY{p}{(}\PY{n}{df}\PY{o}{.}\PY{n}{columns}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{n+nb}{set}\PY{p}{(}\PY{n}{var\PYZus{}cat}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{11}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Variables categóricas:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{var\PYZus{}cat}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,}
+    \PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Variables numéricas:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{, }\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{join}\PY{p}{(}\PY{n}{var\PYZus{}num}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Variables categóricas: type
+
+Variables numéricas: residual sugar, alcohol, citric acid, chlorides, fixed
+acidity, total sulfur dioxide, sulphates, density, free sulfur dioxide, pH,
+volatile acidity, quality
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{12}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{is\PYZus{}na\PYZus{}df}\PY{p}{(}\PY{n}{df}\PY{p}{)}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{}Establecemos el resumen de NAs por columna}
+    \PY{n}{na\PYZus{}summary} \PY{o}{=} \PY{p}{(}
+        \PY{n}{df}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+        \PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{p}{)}
+        \PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{index}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{columna}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{n\PYZus{}missing}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}\PY{p}{)}
+    \PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{}Tomamos totales y prporciones}
+    \PY{n}{na\PYZus{}summary}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{total}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{df}\PY{p}{)}
+    \PY{n}{na\PYZus{}summary}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{prop\PYZus{}missing}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{na\PYZus{}summary}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{n\PYZus{}missing}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{/} \PY{n}{na\PYZus{}summary}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{total}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+    \PY{n}{na\PYZus{}summary}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{prop\PYZus{}original}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{na\PYZus{}summary}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{prop\PYZus{}missing}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}
+
+    \PY{c+c1}{\PYZsh{}Filtramos solo columnas con al menos 1 NA}
+    \PY{n}{na\PYZus{}summary} \PY{o}{=} \PY{n}{na\PYZus{}summary}\PY{p}{[}\PY{n}{na\PYZus{}summary}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{n\PYZus{}missing}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{n}{drop}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{}Agregamos fila resumen global}
+    \PY{n}{total\PYZus{}missing} \PY{o}{=} \PY{n}{df}\PY{o}{.}\PY{n}{isna}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+    \PY{n}{total\PYZus{}elements} \PY{o}{=} \PY{n}{df}\PY{o}{.}\PY{n}{size}
+    \PY{n}{prop\PYZus{}missing\PYZus{}global} \PY{o}{=} \PY{n}{total\PYZus{}missing} \PY{o}{/} \PY{n}{total\PYZus{}elements}
+    \PY{n}{prop\PYZus{}original\PYZus{}global} \PY{o}{=} \PY{l+m+mi}{1} \PY{o}{\PYZhy{}} \PY{n}{prop\PYZus{}missing\PYZus{}global}
+
+    \PY{n}{resumen} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{p}{\PYZob{}}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{columna}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{TOTAL}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{n\PYZus{}missing}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{[}\PY{n}{total\PYZus{}missing}\PY{p}{]}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{total}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{[}\PY{n}{total\PYZus{}elements}\PY{p}{]}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{prop\PYZus{}missing}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{[}\PY{n}{prop\PYZus{}missing\PYZus{}global}\PY{p}{]}\PY{p}{,}
+        \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{prop\PYZus{}original}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{[}\PY{n}{prop\PYZus{}original\PYZus{}global}\PY{p}{]}
+    \PY{p}{\PYZcb{}}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{}Creamos la tabla}
+    \PY{n}{na\PYZus{}summary} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{concat}\PY{p}{(}\PY{p}{[}\PY{n}{na\PYZus{}summary}\PY{p}{,} \PY{n}{resumen}\PY{p}{]}\PY{p}{,} \PY{n}{ignore\PYZus{}index}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+    \PY{k}{return} \PY{n}{na\PYZus{}summary}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{is\PYZus{}na\PYZus{}df}\PY{p}{(}\PY{n}{df}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{13}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                 columna  n\_missing  total  prop\_missing  prop\_original
+0          fixed acidity        995   6497      0.153148       0.846852
+1       volatile acidity        949   6497      0.146067       0.853933
+2            citric acid        454   6497      0.069878       0.930122
+3         residual sugar        200   6497      0.030783       0.969217
+4    free sulfur dioxide        138   6497      0.021241       0.978759
+5   total sulfur dioxide        744   6497      0.114514       0.885486
+6                     pH        180   6497      0.027705       0.972295
+7              sulphates        626   6497      0.096352       0.903648
+8                alcohol        183   6497      0.028167       0.971833
+9                quality        591   6497      0.090965       0.909035
+10                  type        800   6497      0.123134       0.876866
+11                 TOTAL       5860  84461      0.069381       0.930619
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Obtenemos que 10 variables cuentan con valores ausentes. Se representa
+en la siguiente tabla el numero de valores ausentes por variable y la
+proporcion que representan.
+
+Realizaremos dos metodos de imputacion con el fin de poder determinar
+cual es el mas conveniente en cuanto a la preservacion de las
+distribuciones.
+
+    \hypertarget{imputaciuxf3n-en-cadena-mice}{%
+\subsubsection{Imputación en cadena
+(MICE)}\label{imputaciuxf3n-en-cadena-mice}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{14}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{evaluate\PYZus{}imputation}\PY{p}{(}\PY{n}{df\PYZus{}original}\PY{p}{,} \PY{n}{df\PYZus{}imputed}\PY{p}{,} \PY{n}{vars\PYZus{}num}\PY{o}{=}\PY{k+kc}{None}\PY{p}{,} \PY{n}{vars\PYZus{}cat}\PY{o}{=}\PY{k+kc}{None}\PY{p}{)}\PY{p}{:}
+    \PY{n}{resultados} \PY{o}{=} \PY{p}{[}\PY{p}{]}
+
+    \PY{c+c1}{\PYZsh{} KS test en variables numéricas}
+    \PY{k}{if} \PY{n}{vars\PYZus{}num}\PY{p}{:}
+        \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n}{vars\PYZus{}num}\PY{p}{:}
+            \PY{n}{orig} \PY{o}{=} \PY{n}{df\PYZus{}original}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{dropna}\PY{p}{(}\PY{p}{)}
+            \PY{n}{imp} \PY{o}{=} \PY{n}{df\PYZus{}imputed}\PY{p}{[}\PY{n}{col}\PY{p}{]}
+            \PY{n}{stat}\PY{p}{,} \PY{n}{pval} \PY{o}{=} \PY{n}{ks\PYZus{}2samp}\PY{p}{(}\PY{n}{orig}\PY{p}{,} \PY{n}{imp}\PY{p}{)}
+            \PY{n}{resultados}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{p}{\PYZob{}}
+                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variable}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{n}{col}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Tipo}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Numérica}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Prueba}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{KS test}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Estadístico}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{n}{stat}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{p\PYZhy{}value}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{n}{pval}
+            \PY{p}{\PYZcb{}}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} Chi\PYZhy{}cuadrada en variables categóricas}
+    \PY{k}{if} \PY{n}{vars\PYZus{}cat}\PY{p}{:}
+        \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n}{vars\PYZus{}cat}\PY{p}{:}
+            \PY{n}{orig\PYZus{}counts} \PY{o}{=} \PY{n}{df\PYZus{}original}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{n}{dropna}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,} \PY{n}{normalize}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+            \PY{n}{imp\PYZus{}counts} \PY{o}{=} \PY{n}{df\PYZus{}imputed}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{n}{normalize}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+            \PY{n}{categories} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{set}\PY{p}{(}\PY{n}{orig\PYZus{}counts}\PY{o}{.}\PY{n}{index}\PY{p}{)} \PY{o}{|} \PY{n+nb}{set}\PY{p}{(}\PY{n}{imp\PYZus{}counts}\PY{o}{.}\PY{n}{index}\PY{p}{)}\PY{p}{)}
+            \PY{n}{observed} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{p}{[}
+                \PY{p}{[}\PY{n}{orig\PYZus{}counts}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{cat}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{,} \PY{n}{imp\PYZus{}counts}\PY{o}{.}\PY{n}{get}\PY{p}{(}\PY{n}{cat}\PY{p}{,} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{]}
+                \PY{k}{for} \PY{n}{cat} \PY{o+ow}{in} \PY{n}{categories}
+            \PY{p}{]}\PY{p}{)}
+            \PY{n}{chi2}\PY{p}{,} \PY{n}{pval}\PY{p}{,} \PY{n}{\PYZus{}}\PY{p}{,} \PY{n}{\PYZus{}} \PY{o}{=} \PY{n}{chi2\PYZus{}contingency}\PY{p}{(}\PY{n}{observed}\PY{o}{.}\PY{n}{T}\PY{p}{)}
+            \PY{n}{resultados}\PY{o}{.}\PY{n}{append}\PY{p}{(}\PY{p}{\PYZob{}}
+                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variable}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{n}{col}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Tipo}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Categórica}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Prueba}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Chi\PYZhy{}cuadrada}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Estadístico}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{n}{chi2}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{p\PYZhy{}value}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{n}{pval}
+            \PY{p}{\PYZcb{}}\PY{p}{)}
+
+    \PY{k}{return} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{resultados}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{15}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{def} \PY{n+nf}{impute\PYZus{}mice}\PY{p}{(}\PY{n}{df}\PY{p}{,} \PY{n}{vars\PYZus{}num}\PY{p}{,} \PY{n}{vars\PYZus{}cat}\PY{p}{,} \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{l+m+mi}{1989}\PY{p}{,} \PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{l+m+mi}{1000}\PY{p}{)}\PY{p}{:}
+    \PY{n}{df\PYZus{}copy} \PY{o}{=} \PY{n}{df}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} Convertir categóricas a códigos numéricos temporales}
+    \PY{n}{cat\PYZus{}maps} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+    \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n}{vars\PYZus{}cat}\PY{p}{:}
+        \PY{n}{df\PYZus{}copy}\PY{p}{[}\PY{n}{col}\PY{p}{]} \PY{o}{=} \PY{n}{df\PYZus{}copy}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{category}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{cat\PYZus{}maps}\PY{p}{[}\PY{n}{col}\PY{p}{]} \PY{o}{=} \PY{n+nb}{dict}\PY{p}{(}\PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{df\PYZus{}copy}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{cat}\PY{o}{.}\PY{n}{categories}\PY{p}{)}\PY{p}{)}
+        \PY{n}{df\PYZus{}copy}\PY{p}{[}\PY{n}{col}\PY{p}{]} \PY{o}{=} \PY{n}{df\PYZus{}copy}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{cat}\PY{o}{.}\PY{n}{codes}\PY{o}{.}\PY{n}{replace}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{nan}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} IterativeImputer trabaja sobre todo el DF}
+    \PY{n}{imputer} \PY{o}{=} \PY{n}{IterativeImputer}\PY{p}{(}\PY{n}{random\PYZus{}state}\PY{o}{=}\PY{n}{random\PYZus{}state}\PY{p}{,} \PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{n}{max\PYZus{}iter}\PY{p}{)}
+    \PY{n}{imputed\PYZus{}array} \PY{o}{=} \PY{n}{imputer}\PY{o}{.}\PY{n}{fit\PYZus{}transform}\PY{p}{(}\PY{n}{df\PYZus{}copy}\PY{p}{)}
+    \PY{n}{imputed\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{imputed\PYZus{}array}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{n}{df\PYZus{}copy}\PY{o}{.}\PY{n}{columns}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{df\PYZus{}copy}\PY{o}{.}\PY{n}{index}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} Redondear categóricas y devolver a etiquetas originales}
+    \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n}{vars\PYZus{}cat}\PY{p}{:}
+        \PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{n}{col}\PY{p}{]} \PY{o}{=} \PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}
+        \PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{n}{col}\PY{p}{]} \PY{o}{=} \PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{map}\PY{p}{(}\PY{n}{cat\PYZus{}maps}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{p}{)}
+
+    \PY{n}{reporte} \PY{o}{=} \PY{n}{evaluate\PYZus{}imputation}\PY{p}{(}\PY{n}{df}\PY{p}{,} \PY{n}{imputed\PYZus{}df}\PY{p}{,} \PY{n}{vars\PYZus{}num}\PY{p}{,} \PY{n}{vars\PYZus{}cat}\PY{p}{)}
+    \PY{k}{return} \PY{n}{imputed\PYZus{}df}\PY{p}{,} \PY{n}{reporte}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{16}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{micer} \PY{o}{=} \PY{n}{impute\PYZus{}mice}\PY{p}{(}\PY{n}{df}\PY{p}{,} \PY{n}{var\PYZus{}num}\PY{p}{,} \PY{n}{var\PYZus{}cat}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{17}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{display}\PY{p}{(}\PY{n}{micer}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{micer}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+      fixed acidity  volatile acidity  citric acid  residual sugar  chlorides  \textbackslash{}
+0          7.400000          0.700000     0.000000        1.900000      0.076   
+1          7.800000          0.880000     0.000000        2.600000      0.098   
+2          7.800000          0.760000     0.040000        2.300000      0.092   
+3         10.178140          0.280000     0.560000        1.900000      0.075   
+4          7.400000          0.700000     0.117625        1.900000      0.076   
+{\ldots}             {\ldots}               {\ldots}          {\ldots}             {\ldots}        {\ldots}   
+6492       6.371783          0.210000     0.290000        1.600000      0.039   
+6493       6.500478          0.320000     0.360000        8.000000      0.047   
+6494       6.500000          0.240000     0.190000        3.349322      0.041   
+6495       5.500000          0.290672     0.300000        1.100000      0.022   
+6496       6.000000          0.272791     0.380000        0.800000      0.020   
+
+      free sulfur dioxide  total sulfur dioxide  density    pH  sulphates  \textbackslash{}
+0                    11.0                  34.0  0.99780  3.51       0.56   
+1                    25.0                  67.0  0.99680  3.20       0.68   
+2                    15.0                  54.0  0.99700  3.26       0.65   
+3                    17.0                  60.0  0.99800  3.16       0.58   
+4                    11.0                  34.0  0.99780  3.51       0.56   
+{\ldots}                   {\ldots}                   {\ldots}      {\ldots}   {\ldots}        {\ldots}   
+6492                 24.0                  92.0  0.99114  3.27       0.50   
+6493                 57.0                 168.0  0.99490  3.15       0.46   
+6494                 30.0                 111.0  0.99254  2.99       0.46   
+6495                 20.0                 110.0  0.98869  3.34       0.38   
+6496                 22.0                  98.0  0.98941  3.26       0.32   
+
+      alcohol   quality   type  
+0         9.4  5.000000    red  
+1         9.8  5.000000    red  
+2         9.8  5.000000    red  
+3         9.8  6.000000    red  
+4         9.4  5.000000    red  
+{\ldots}       {\ldots}       {\ldots}    {\ldots}  
+6492     11.2  6.000000  white  
+6493      9.6  5.000000  white  
+6494      9.4  5.485587  white  
+6495     12.8  7.000000  white  
+6496     11.8  6.000000  white  
+
+[6497 rows x 13 columns]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+                Variable        Tipo        Prueba  Estadístico   p-value
+0         residual sugar    Numérica       KS test     0.004566  1.000000
+1                alcohol    Numérica       KS test     0.002589  1.000000
+2            citric acid    Numérica       KS test     0.007881  0.988915
+3              chlorides    Numérica       KS test     0.000000  1.000000
+4          fixed acidity    Numérica       KS test     0.016022  0.423044
+5   total sulfur dioxide    Numérica       KS test     0.010920  0.854591
+6              sulphates    Numérica       KS test     0.021906  0.101626
+7                density    Numérica       KS test     0.000000  1.000000
+8    free sulfur dioxide    Numérica       KS test     0.001406  1.000000
+9                     pH    Numérica       KS test     0.004205  1.000000
+10      volatile acidity    Numérica       KS test     0.022041  0.107134
+11               quality    Numérica       KS test     0.029328  0.009508
+12                  type  Categórica  Chi-cuadrada     0.000000  1.000000
+    \end{Verbatim}
+
+    
+    Realizando la prueba de KS obtenemos que la mayoría de las variables
+tienen un p-value mayor que 0.05 a excepecion de una, la variable
+quality. De igual manera, con este metodo de imputacion ya no
+presentamos ningun valor ausente.
+
+Sin embargo, debido a que una variable no paso la prueba de KS,
+realizaremos otro metodo de imputacion con el fin de poder ver cual de
+los dos nos arroja mejores resultados.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{is\PYZus{}na\PYZus{}df}\PY{p}{(}\PY{n}{micer}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{18}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+  columna  n\_missing  total  prop\_missing  prop\_original
+0   TOTAL          0     65           0.0            1.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{19}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{imputed\PYZus{}df} \PY{o}{=} \PY{n}{micer}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{imputed\PYZus{}df}\PY{o}{.}\PY{n}{describe}\PY{p}{(}\PY{n}{include} \PY{o}{=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{all}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{20}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+        fixed acidity  volatile acidity  citric acid  residual sugar  \textbackslash{}
+count     6497.000000       6497.000000  6497.000000     6497.000000
+unique            NaN               NaN          NaN             NaN
+top               NaN               NaN          NaN             NaN
+freq              NaN               NaN          NaN             NaN
+mean         7.215580          0.340131     0.318424        5.443155
+std          1.272535          0.158513     0.141323        4.749903
+min          3.800000         -0.261265    -0.282880       -3.297837
+25\%          6.400000          0.230000     0.250000        1.800000
+50\%          7.000000          0.295000     0.310000        3.100000
+75\%          7.700000          0.410000     0.390000        8.100000
+max         15.900000          1.580000     1.660000       65.800000
+
+          chlorides  free sulfur dioxide  total sulfur dioxide      density  \textbackslash{}
+count   6497.000000          6497.000000           6497.000000  6497.000000
+unique          NaN                  NaN                   NaN          NaN
+top             NaN                  NaN                   NaN          NaN
+freq            NaN                  NaN                   NaN          NaN
+mean       0.056034            30.528763            115.376127     0.994697
+std        0.035034            17.639884             55.591614     0.002999
+min        0.009000            -0.813248            -19.857417     0.987110
+25\%        0.038000            17.000000             78.000000     0.992340
+50\%        0.047000            29.000000            118.000000     0.994890
+75\%        0.065000            41.000000            154.108606     0.996990
+max        0.611000           289.000000            440.000000     1.038980
+
+                 pH    sulphates      alcohol      quality   type
+count   6497.000000  6497.000000  6497.000000  6497.000000   6494
+unique          NaN          NaN          NaN          NaN      2
+top             NaN          NaN          NaN          NaN  white
+freq            NaN          NaN          NaN          NaN   4897
+mean       3.218443     0.531498    10.494635     5.816498    NaN
+std        0.160206     0.145053     1.188895     0.844550    NaN
+min        2.720000     0.220000     8.000000     3.000000    NaN
+25\%        3.110000     0.440000     9.500000     5.000000    NaN
+50\%        3.210000     0.510000    10.300000     6.000000    NaN
+75\%        3.320000     0.600000    11.300000     6.000000    NaN
+max        4.010000     2.000000    14.900000     9.000000    NaN
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \hypertarget{imputaciuxf3n-random-forest}{%
+\subsubsection{Imputación Random
+Forest}\label{imputaciuxf3n-random-forest}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{21}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Metodo de Random Forest}
+
+\PY{k}{def} \PY{n+nf}{impute\PYZus{}rf}\PY{p}{(}\PY{n}{df}\PY{p}{,} \PY{n}{vars\PYZus{}num}\PY{p}{,} \PY{n}{vars\PYZus{}cat}\PY{p}{,} \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{l+m+mi}{1989}\PY{p}{,} \PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{l+m+mi}{10}\PY{p}{)}\PY{p}{:}
+    \PY{n}{df\PYZus{}copy} \PY{o}{=} \PY{n}{df}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} Convertir variables categóricas a códigos numéricos temporales}
+    \PY{n}{cat\PYZus{}maps} \PY{o}{=} \PY{p}{\PYZob{}}\PY{p}{\PYZcb{}}
+    \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n}{vars\PYZus{}cat}\PY{p}{:}
+        \PY{n}{df\PYZus{}copy}\PY{p}{[}\PY{n}{col}\PY{p}{]} \PY{o}{=} \PY{n}{df\PYZus{}copy}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{category}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{n}{cat\PYZus{}maps}\PY{p}{[}\PY{n}{col}\PY{p}{]} \PY{o}{=} \PY{n+nb}{dict}\PY{p}{(}\PY{n+nb}{enumerate}\PY{p}{(}\PY{n}{df\PYZus{}copy}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{cat}\PY{o}{.}\PY{n}{categories}\PY{p}{)}\PY{p}{)}
+        \PY{n}{df\PYZus{}copy}\PY{p}{[}\PY{n}{col}\PY{p}{]} \PY{o}{=} \PY{n}{df\PYZus{}copy}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{cat}\PY{o}{.}\PY{n}{codes}\PY{o}{.}\PY{n}{replace}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{nan}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} Imputar con IterativeImputer + RandomForestRegressor}
+    \PY{n}{imputer} \PY{o}{=} \PY{n}{IterativeImputer}\PY{p}{(}
+        \PY{n}{estimator}\PY{o}{=}\PY{n}{RandomForestRegressor}\PY{p}{(}\PY{n}{n\PYZus{}estimators}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{,} \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{n}{random\PYZus{}state}\PY{p}{)}\PY{p}{,}
+        \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{n}{random\PYZus{}state}\PY{p}{,}
+        \PY{n}{max\PYZus{}iter}\PY{o}{=}\PY{n}{max\PYZus{}iter}
+    \PY{p}{)}
+
+    \PY{n}{imputed\PYZus{}array} \PY{o}{=} \PY{n}{imputer}\PY{o}{.}\PY{n}{fit\PYZus{}transform}\PY{p}{(}\PY{n}{df\PYZus{}copy}\PY{p}{)}
+    \PY{n}{imputed\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{imputed\PYZus{}array}\PY{p}{,} \PY{n}{columns}\PY{o}{=}\PY{n}{df\PYZus{}copy}\PY{o}{.}\PY{n}{columns}\PY{p}{,} \PY{n}{index}\PY{o}{=}\PY{n}{df\PYZus{}copy}\PY{o}{.}\PY{n}{index}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} Restaurar variables categóricas}
+    \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n}{vars\PYZus{}cat}\PY{p}{:}
+        \PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{n}{col}\PY{p}{]} \PY{o}{=} \PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}
+        \PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{n}{col}\PY{p}{]} \PY{o}{=} \PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{o}{.}\PY{n}{map}\PY{p}{(}\PY{n}{cat\PYZus{}maps}\PY{p}{[}\PY{n}{col}\PY{p}{]}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{} Reporte de comparación (suponiendo que tienes una función definida)}
+    \PY{n}{reporte} \PY{o}{=} \PY{n}{evaluate\PYZus{}imputation}\PY{p}{(}\PY{n}{df}\PY{p}{,} \PY{n}{imputed\PYZus{}df}\PY{p}{,} \PY{n}{vars\PYZus{}num}\PY{p}{,} \PY{n}{vars\PYZus{}cat}\PY{p}{)}
+    \PY{k}{return} \PY{n}{imputed\PYZus{}df}\PY{p}{,} \PY{n}{reporte}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{22}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{randomforest} \PY{o}{=} \PY{n}{impute\PYZus{}rf}\PY{p}{(}\PY{n}{df}\PY{p}{,} \PY{n}{var\PYZus{}num}\PY{p}{,} \PY{n}{var\PYZus{}cat}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+/home/erick/Entorno/lib/python3.10/site-
+packages/sklearn/impute/\_iterative.py:895: ConvergenceWarning:
+[IterativeImputer] Early stopping criterion not reached.
+  warnings.warn(
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{25}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{display}\PY{p}{(}\PY{n}{randomforest}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{,} \PY{n}{randomforest}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+      fixed acidity  volatile acidity  citric acid  residual sugar  chlorides  \textbackslash{}
+0             7.400           0.70000       0.0000           1.900      0.076   
+1             7.800           0.88000       0.0000           2.600      0.098   
+2             7.800           0.76000       0.0400           2.300      0.092   
+3            10.391           0.28000       0.5600           1.900      0.075   
+4             7.400           0.70000       0.0166           1.900      0.076   
+{\ldots}             {\ldots}               {\ldots}          {\ldots}             {\ldots}        {\ldots}   
+6492          6.433           0.21000       0.2900           1.600      0.039   
+6493          6.568           0.32000       0.3600           8.000      0.047   
+6494          6.500           0.24000       0.1900           1.577      0.041   
+6495          5.500           0.31310       0.3000           1.100      0.022   
+6496          6.000           0.26375       0.3800           0.800      0.020   
+
+      free sulfur dioxide  total sulfur dioxide  density    pH  sulphates  \textbackslash{}
+0                    11.0                  34.0  0.99780  3.51       0.56   
+1                    25.0                  67.0  0.99680  3.20       0.68   
+2                    15.0                  54.0  0.99700  3.26       0.65   
+3                    17.0                  60.0  0.99800  3.16       0.58   
+4                    11.0                  34.0  0.99780  3.51       0.56   
+{\ldots}                   {\ldots}                   {\ldots}      {\ldots}   {\ldots}        {\ldots}   
+6492                 24.0                  92.0  0.99114  3.27       0.50   
+6493                 57.0                 168.0  0.99490  3.15       0.46   
+6494                 30.0                 111.0  0.99254  2.99       0.46   
+6495                 20.0                 110.0  0.98869  3.34       0.38   
+6496                 22.0                  98.0  0.98941  3.26       0.32   
+
+      alcohol  quality   type  
+0         9.4     5.00    red  
+1         9.8     5.00    red  
+2         9.8     5.00    red  
+3         9.8     6.00    red  
+4         9.4     5.00    red  
+{\ldots}       {\ldots}      {\ldots}    {\ldots}  
+6492     11.2     6.00  white  
+6493      9.6     5.00  white  
+6494      9.4     5.41  white  
+6495     12.8     7.00  white  
+6496     11.8     6.00  white  
+
+[6497 rows x 13 columns]
+    \end{Verbatim}
+
+    
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+                Variable        Tipo        Prueba  Estadístico   p-value
+0         residual sugar    Numérica       KS test     0.005161  0.999994
+1                alcohol    Numérica       KS test     0.002627  1.000000
+2            citric acid    Numérica       KS test     0.008958  0.960481
+3              chlorides    Numérica       KS test     0.000000  1.000000
+4          fixed acidity    Numérica       KS test     0.020821  0.148284
+5   total sulfur dioxide    Numérica       KS test     0.006746  0.998890
+6              sulphates    Numérica       KS test     0.020673  0.140607
+7                density    Numérica       KS test     0.000000  1.000000
+8    free sulfur dioxide    Numérica       KS test     0.001588  1.000000
+9                     pH    Numérica       KS test     0.004182  1.000000
+10      volatile acidity    Numérica       KS test     0.019254  0.213624
+11               quality    Numérica       KS test     0.028251  0.013971
+12                  type  Categórica  Chi-cuadrada     0.000000  1.000000
+    \end{Verbatim}
+
+    
+    \hypertarget{diferencias-por-cada-imputaciuxf3n}{%
+\subsubsection{Diferencias por cada
+Imputación}\label{diferencias-por-cada-imputaciuxf3n}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{27}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{mice\PYZus{}aux} \PY{o}{=} \PY{n}{micer}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{randomforest\PYZus{}aux} \PY{o}{=} \PY{n}{randomforest}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+
+\PY{n}{var\PYZus{}order} \PY{o}{=} \PY{n}{randomforest\PYZus{}aux}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Variable}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n}{randomforest\PYZus{}aux}\PY{o}{.}\PY{n}{set\PYZus{}index}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Variable}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{mice\PYZus{}aux}\PY{o}{.}\PY{n}{set\PYZus{}index}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Variable}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{n}{randomforest\PYZus{}aux} \PY{o}{=} \PY{n}{randomforest\PYZus{}aux}\PY{o}{.}\PY{n}{filter}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{p\PYZhy{}value}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{mice\PYZus{}aux} \PY{o}{=} \PY{n}{mice\PYZus{}aux}\PY{o}{.}\PY{n}{filter}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{p\PYZhy{}value}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+
+\PY{n}{randomforest\PYZus{}aux}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{p\PYZhy{}value}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{p\PYZhy{}value (randomforest)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+\PY{n}{mice\PYZus{}aux}\PY{o}{.}\PY{n}{rename}\PY{p}{(}\PY{n}{columns}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{p\PYZhy{}value}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{p\PYZhy{}value (mice)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{,} \PY{n}{inplace}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}
+
+\PY{n}{merged} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{merge}\PY{p}{(}
+    \PY{n}{randomforest\PYZus{}aux}\PY{p}{,} \PY{n}{mice\PYZus{}aux}\PY{p}{,}
+    \PY{n}{left\PYZus{}index}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+    \PY{n}{right\PYZus{}index}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+    \PY{n}{how}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{inner}\PY{l+s+s2}{\PYZdq{}}
+\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{merged}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{28}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                      p-value (randomforest)  p-value (mice)
+Variable
+residual sugar                      0.999994        1.000000
+alcohol                             1.000000        1.000000
+citric acid                         0.960481        0.988915
+chlorides                           1.000000        1.000000
+fixed acidity                       0.148284        0.423044
+total sulfur dioxide                0.998890        0.854591
+sulphates                           0.140607        0.101626
+density                             1.000000        1.000000
+free sulfur dioxide                 1.000000        1.000000
+pH                                  1.000000        1.000000
+volatile acidity                    0.213624        0.107134
+quality                             0.013971        0.009508
+type                                1.000000        1.000000
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Dados los resultados vemos conveniente considerar la imputación por el
+método mice, por los resultados que son similares a los de random forest
+y que algunas variables como fixed acidity mantiene mejor la
+distribución original y porque computacionalmente es menos demandante.
+
+    \hypertarget{atuxedpicos}{%
+\subsubsection{Atípicos}\label{atuxedpicos}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{29}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{class} \PY{n+nc}{analyze}\PY{p}{:}
+    \PY{c+c1}{\PYZsh{} Inicializamos la clase}
+    \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{df}\PY{p}{,} \PY{n}{num\PYZus{}vars}\PY{p}{,} \PY{n}{cat\PYZus{}vars}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df} \PY{o}{=} \PY{n}{df}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{num\PYZus{}vars} \PY{o}{=} \PY{n}{num\PYZus{}vars}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cat\PYZus{}vars} \PY{o}{=} \PY{n}{cat\PYZus{}vars}
+
+    \PY{c+c1}{\PYZsh{}Método para graficar variables numéricas (cada una en figura independiente)}
+    \PY{k}{def} \PY{n+nf}{plot\PYZus{}num}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{k}{for} \PY{n}{var} \PY{o+ow}{in} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{num\PYZus{}vars}\PY{p}{:}
+            \PY{n}{fig} \PY{o}{=} \PY{n}{make\PYZus{}subplots}\PY{p}{(}\PY{n}{rows}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{cols}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,} \PY{n}{subplot\PYZus{}titles}\PY{o}{=}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{var}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ \PYZhy{} Boxplot}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{var}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ \PYZhy{} Histograma}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{)}
+
+            \PY{c+c1}{\PYZsh{} Boxplot}
+            \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}trace}\PY{p}{(}
+                \PY{n}{go}\PY{o}{.}\PY{n}{Box}\PY{p}{(}\PY{n}{y}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n}{var}\PY{p}{]}\PY{p}{,} \PY{n}{name}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Boxplot}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{marker\PYZus{}color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}008080}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{,}
+                \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{1}
+            \PY{p}{)}
+
+            \PY{c+c1}{\PYZsh{} Histograma}
+            \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}trace}\PY{p}{(}
+                \PY{n}{go}\PY{o}{.}\PY{n}{Histogram}\PY{p}{(}\PY{n}{x}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n}{var}\PY{p}{]}\PY{p}{,} \PY{n}{name}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Histograma}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+                             \PY{c+c1}{\PYZsh{}marker\PYZus{}color=\PYZdq{}\PYZsh{}00a77d\PYZdq{}, }
+                             \PY{c+c1}{\PYZsh{}marker\PYZus{}color=\PYZsq{}\PYZsh{}722F37\PYZsq{},}
+                             \PY{n}{marker\PYZus{}color}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{rgba(114, 47, 55, 0.5)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}  \PY{c+c1}{\PYZsh{} burdeos con 50\PYZpc{} transparencia}
+                             \PY{n}{nbinsx}\PY{o}{=}\PY{l+m+mi}{50}\PY{p}{,}
+                             \PY{n}{histnorm}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{probability density}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}\PY{p}{,}
+                \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{2}
+            \PY{p}{)}
+
+            \PY{n}{fig}\PY{o}{.}\PY{n}{update\PYZus{}layout}\PY{p}{(}\PY{n}{title\PYZus{}text}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variable numérica: }\PY{l+s+si}{\PYZob{}}\PY{n}{var}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{height}\PY{o}{=}\PY{l+m+mi}{400}\PY{p}{,} \PY{n}{width}\PY{o}{=}\PY{l+m+mi}{800}\PY{p}{)}
+            \PY{n}{fig}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{}Método para graficar variables categóricas}
+    \PY{k}{def} \PY{n+nf}{plot\PYZus{}cat}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{)}\PY{p}{:}
+        \PY{n}{n} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cat\PYZus{}vars}\PY{p}{)}
+        \PY{n}{cols} \PY{o}{=} \PY{l+m+mi}{2}
+        \PY{n}{rows} \PY{o}{=} \PY{p}{(}\PY{n}{n} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)} \PY{o}{/}\PY{o}{/} \PY{n}{cols} \PY{k}{if} \PY{n}{n} \PY{o}{\PYZgt{}} \PY{l+m+mi}{1} \PY{k}{else} \PY{l+m+mi}{1}
+
+        \PY{n}{fig} \PY{o}{=} \PY{n}{make\PYZus{}subplots}\PY{p}{(}
+            \PY{n}{rows}\PY{o}{=}\PY{n}{rows}\PY{p}{,} \PY{n}{cols}\PY{o}{=}\PY{n}{cols}\PY{p}{,}
+            \PY{n}{specs}\PY{o}{=}\PY{p}{[}\PY{p}{[}\PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{type}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{domain}\PY{l+s+s1}{\PYZsq{}}\PY{p}{\PYZcb{}}\PY{p}{]}\PY{o}{*}\PY{n}{cols} \PY{k}{for} \PY{n}{\PYZus{}} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n}{rows}\PY{p}{)}\PY{p}{]}\PY{p}{,}
+            \PY{n}{subplot\PYZus{}titles}\PY{o}{=}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cat\PYZus{}vars}
+        \PY{p}{)}
+
+        \PY{k}{for} \PY{n}{i}\PY{p}{,} \PY{n}{var} \PY{o+ow}{in} \PY{n+nb}{enumerate}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cat\PYZus{}vars}\PY{p}{)}\PY{p}{:}
+            \PY{n}{row} \PY{o}{=} \PY{n}{i} \PY{o}{/}\PY{o}{/} \PY{n}{cols} \PY{o}{+} \PY{l+m+mi}{1}
+            \PY{n}{col} \PY{o}{=} \PY{n}{i} \PY{o}{\PYZpc{}} \PY{n}{cols} \PY{o}{+} \PY{l+m+mi}{1}
+
+            \PY{n}{value\PYZus{}counts} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n}{var}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}
+            \PY{n}{labels} \PY{o}{=} \PY{n}{value\PYZus{}counts}\PY{o}{.}\PY{n}{index}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{str}\PY{p}{)}
+            \PY{n}{values} \PY{o}{=} \PY{n}{value\PYZus{}counts}\PY{o}{.}\PY{n}{values}
+
+            \PY{n}{wine\PYZus{}palette} \PY{o}{=} \PY{p}{[}
+                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}722F37}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}B85042}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}E6AF2E}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}F6D55C}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}F4A7B9}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}2F4F4F}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}8D6E63}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}A1887F}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}D7CCC8}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}795548}\PY{l+s+s2}{\PYZdq{}}
+            \PY{p}{]}
+            
+            \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}trace}\PY{p}{(}
+                \PY{n}{go}\PY{o}{.}\PY{n}{Pie}\PY{p}{(}
+                    \PY{n}{labels}\PY{o}{=}\PY{n}{labels}\PY{p}{,} 
+                    \PY{n}{values}\PY{o}{=}\PY{n}{values}\PY{p}{,} 
+                    \PY{n}{name}\PY{o}{=}\PY{n}{var}\PY{p}{,} 
+                    \PY{n}{textinfo}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{percent+label}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                    \PY{n}{marker}\PY{o}{=}\PY{n+nb}{dict}\PY{p}{(}\PY{n}{colors}\PY{o}{=}\PY{n}{wine\PYZus{}palette}\PY{p}{)}
+                \PY{p}{)}\PY{p}{,}
+                \PY{n}{row}\PY{o}{=}\PY{n}{row}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{n}{col}
+            \PY{p}{)}
+
+            \PY{c+c1}{\PYZsh{}fig.add\PYZus{}trace(}
+            \PY{c+c1}{\PYZsh{}    go.Pie(labels=labels, values=values, name=var, textinfo=\PYZsq{}percent+label\PYZsq{}),}
+            \PY{c+c1}{\PYZsh{}    row=row, col=col}
+            \PY{c+c1}{\PYZsh{})}
+
+        \PY{n}{fig}\PY{o}{.}\PY{n}{update\PYZus{}layout}\PY{p}{(}\PY{n}{title\PYZus{}text}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variables Categóricas}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{height}\PY{o}{=}\PY{l+m+mi}{400}\PY{o}{*}\PY{n}{rows}\PY{p}{)}
+        \PY{n}{fig}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+
+    \PY{c+c1}{\PYZsh{}Método para graficar la matriz de correlación de numéricas}
+    \PY{k}{def} \PY{n+nf}{corr\PYZus{}matrix}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{color}\PY{p}{)}\PY{p}{:}
+        \PY{n}{corr\PYZus{}matrix} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{num\PYZus{}vars}\PY{p}{]}\PY{o}{.}\PY{n}{corr}\PY{p}{(}\PY{p}{)}
+
+        \PY{n}{fig} \PY{o}{=} \PY{n}{go}\PY{o}{.}\PY{n}{Figure}\PY{p}{(}\PY{n}{data}\PY{o}{=}\PY{n}{go}\PY{o}{.}\PY{n}{Heatmap}\PY{p}{(}
+            \PY{n}{z}\PY{o}{=}\PY{n}{corr\PYZus{}matrix}\PY{o}{.}\PY{n}{values}\PY{p}{,}
+            \PY{n}{x}\PY{o}{=}\PY{n}{corr\PYZus{}matrix}\PY{o}{.}\PY{n}{columns}\PY{p}{,}
+            \PY{n}{y}\PY{o}{=}\PY{n}{corr\PYZus{}matrix}\PY{o}{.}\PY{n}{columns}\PY{p}{,}
+            \PY{n}{colorscale}\PY{o}{=}\PY{n}{color}\PY{p}{,}
+            \PY{n}{text}\PY{o}{=}\PY{n}{corr\PYZus{}matrix}\PY{o}{.}\PY{n}{round}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{o}{.}\PY{n}{values}\PY{p}{,}      \PY{c+c1}{\PYZsh{} valores de correlación con 1 decimal}
+            \PY{n}{texttemplate}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+si}{\PYZob{}text\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}                \PY{c+c1}{\PYZsh{} mostrar texto en cada celda}
+            \PY{n}{textfont}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{size}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}\PY{l+m+mi}{10}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{color}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{black}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}  \PY{c+c1}{\PYZsh{} estilo de fuente}
+            \PY{p}{)}\PY{p}{)}
+
+        \PY{n}{fig}\PY{o}{.}\PY{n}{update\PYZus{}layout}\PY{p}{(}
+            \PY{n}{title}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Matriz de Correlación}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+            \PY{n}{width}\PY{o}{=}\PY{l+m+mi}{800}\PY{p}{,}
+            \PY{n}{height}\PY{o}{=}\PY{l+m+mi}{600}
+        \PY{p}{)}
+
+        \PY{n}{fig}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{30}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{analisis} \PY{o}{=} \PY{n}{analyze}\PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{,} \PY{n}{var\PYZus{}num}\PY{p}{,} \PY{n}{var\PYZus{}cat}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Exploración de distribución de cada variable para la detección de
+valores atípicos (primer acercamiento).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{31}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{analisis}\PY{o}{.}\PY{n}{plot\PYZus{}num}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_4.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_5.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_6.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_7.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_8.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_9.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_10.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_43_11.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{valores-atuxedpicos}{%
+\subsubsection{Valores Atípicos}\label{valores-atuxedpicos}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}val\PYZus{}atipicos}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Variable}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Unidad}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Límite Inf}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Límite Sup}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Valores Atípicos}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{32}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                Variable  Unidad  Límite Inf  Límite Sup  Valores Atípicos
+0          fixed acidity   g/dm³       4.000      15.000                 5
+1       volatile acidity   g/dm³       0.120       1.100                31
+2            citric acid   g/dm³       0.000       1.000                 1
+3         residual sugar   g/dm³       0.600      65.000                 1
+4              chlorides   g/dm³       0.009       0.346                18
+5    free sulfur dioxide  mg/dm³       1.000      72.000                92
+6   total sulfur dioxide  mg/dm³       6.000     440.000                 0
+7                density   g/cm³       0.990       1.004               348
+8                     pH       -       2.900       3.900                79
+9              sulphates   g/dm³       0.220       1.080                35
+10               alcohol     vol       8.000      14.900                 0
+11               quality       -       3.000       9.000                 0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \textbf{Variable Chlorides}
+
+    Aunque en el gráfico de boxplot de la variable chlorides pareciera que
+hay muchos puntos atípicos, si tomamos en cuenta el rango normal de la
+variable (valores entre 0.009 y 0.346), en realidad solo se identifican
+18 valores fuera de este rango, lo cual es un número reducido en
+comparación con lo que sugiere el gráfico.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{33}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Valores atípicos en la variable chlorides:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{chlorides}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{l+m+mf}{0.009}\PY{p}{)} \PY{o}{|} \PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{chlorides}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mf}{0.346}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Valores atípicos en la variable chlorides: 18
+    \end{Verbatim}
+
+    \textbf{Variable Density}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{34}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Valores atípicos en la variable density:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{density}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{l+m+mf}{0.99}\PY{p}{)} \PY{o}{|} \PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{density}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mf}{1.004}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Valores atípicos en la variable density: 348
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{35}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{percentiles} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{0}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{20}\PY{p}{,} \PY{l+m+mi}{30}\PY{p}{,} \PY{l+m+mi}{40}\PY{p}{,} \PY{l+m+mi}{50}\PY{p}{,} \PY{l+m+mi}{60}\PY{p}{,} \PY{l+m+mi}{70}\PY{p}{,} \PY{l+m+mi}{80}\PY{p}{,} \PY{l+m+mi}{90}\PY{p}{,} \PY{l+m+mi}{95}\PY{p}{,} \PY{l+m+mi}{99}\PY{p}{,} \PY{l+m+mi}{100}\PY{p}{]}
+
+\PY{n}{valores} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{percentile}\PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{density}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{percentiles}\PY{p}{)}
+
+\PY{n}{percentiles\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data} \PY{o}{=} \PY{p}{[}\PY{n}{valores}\PY{p}{]}\PY{p}{,} \PY{n}{columns} \PY{o}{=} \PY{n}{percentiles}\PY{p}{)}
+
+\PY{n}{display}\PY{p}{(}\PY{n}{percentiles\PYZus{}df}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+       0        1       5        10      20      30      40       50   \textbackslash{}
+0  0.98711  0.98892  0.9899  0.99067  0.9918  0.9928  0.9938  0.99489   
+
+       60       70      80      90        95      99       100  
+0  0.99568  0.99655  0.9974  0.9984  0.999392  1.0006  1.03898  
+    \end{Verbatim}
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{36}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{percentiles} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{arange}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mf}{10.5}\PY{p}{,} \PY{l+m+mf}{0.5}\PY{p}{)}  \PY{c+c1}{\PYZsh{} incluimos 10}
+
+\PY{n}{valores} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{percentile}\PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{density}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{percentiles}\PY{p}{)}
+
+\PY{n}{percentiles\PYZus{}df} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{DataFrame}\PY{p}{(}\PY{n}{data} \PY{o}{=} \PY{p}{[}\PY{n}{valores}\PY{p}{]}\PY{p}{,} \PY{n}{columns} \PY{o}{=} \PY{n}{percentiles}\PY{p}{)}
+
+\PY{n}{display}\PY{p}{(}\PY{n}{percentiles\PYZus{}df}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+     5.0   5.5       6.0       6.5      7.0      7.5     8.0       8.5   \textbackslash{}
+0  0.9899  0.99  0.990078  0.990182  0.99022  0.99031  0.9904  0.990472   
+
+      9.0     9.5      10.0  
+0  0.99058  0.9906  0.99067  
+    \end{Verbatim}
+
+    
+    Vemos que un 5.5\% de la muestra se acumula por debajo del valor mínimo
+esperado, 345 de los 348 valores atípicos observados anteriormente, el
+resto son valores mayores a 1.004.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{density}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{n}{np}\PY{o}{.}\PY{n}{percentile}\PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{density}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{l+m+mf}{5.5}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{37}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+345
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Density es la variable con más valores atípicos, sin embargo, tomando en
+cuenta que los valores por debajo del valor mínimo esperado se
+encuentran cerca de éste, entonces más adelante podemos considerar si
+los mantenemos como parte de la muestra.
+
+    \textbf{Detección de outliers}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{38}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Detectar}
+\PY{k}{def} \PY{n+nf}{detect\PYZus{}outliers\PYZus{}iforest}\PY{p}{(}\PY{n}{df}\PY{p}{,} \PY{n}{n\PYZus{}estimators}\PY{o}{=}\PY{l+m+mi}{100}\PY{p}{,} \PY{n}{contamination}\PY{o}{=}\PY{l+m+mf}{0.01}\PY{p}{,} \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{l+m+mi}{1989}\PY{p}{)}\PY{p}{:}
+    \PY{n}{model} \PY{o}{=} \PY{n}{IForest}\PY{p}{(}\PY{n}{n\PYZus{}estimators}\PY{o}{=}\PY{n}{n\PYZus{}estimators}\PY{p}{,} \PY{n}{contamination}\PY{o}{=}\PY{n}{contamination}\PY{p}{,} \PY{n}{random\PYZus{}state}\PY{o}{=}\PY{n}{random\PYZus{}state}\PY{p}{)}
+    \PY{n}{model}\PY{o}{.}\PY{n}{fit}\PY{p}{(}\PY{n}{df}\PY{o}{.}\PY{n}{values}\PY{p}{)}
+    \PY{n}{preds} \PY{o}{=} \PY{n}{model}\PY{o}{.}\PY{n}{predict}\PY{p}{(}\PY{n}{df}\PY{o}{.}\PY{n}{values}\PY{p}{)}
+    \PY{k}{return} \PY{n}{df}\PY{p}{[}\PY{n}{preds} \PY{o}{==} \PY{l+m+mi}{1}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{39}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}outliers} \PY{o}{=} \PY{n}{detect\PYZus{}outliers\PYZus{}iforest}\PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{n}{var\PYZus{}num}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{40}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{N} \PY{o}{=} \PY{n}{imputed\PYZus{}df}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{c+c1}{\PYZsh{} Filas del dataframe original}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{41}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{n\PYZus{}outliers} \PY{o}{=} \PY{n}{df\PYZus{}outliers}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{c+c1}{\PYZsh{} Outliers}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{42}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{prop} \PY{o}{=} \PY{n}{n\PYZus{}outliers} \PY{o}{/} \PY{n}{N}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Proporción de valores atípicos: }\PY{l+s+si}{\PYZob{}}\PY{n}{prop}\PY{l+s+si}{:}\PY{l+s+s2}{.6\PYZpc{}}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Proporción de valores atípicos: 1.000462\%
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}val\PYZus{}atipicos}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Variable}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Unidad}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Límite Inf}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Límite Sup}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Valores Atípicos}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{43}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                Variable  Unidad  Límite Inf  Límite Sup  Valores Atípicos
+0          fixed acidity   g/dm³       4.000      15.000                 5
+1       volatile acidity   g/dm³       0.120       1.100                31
+2            citric acid   g/dm³       0.000       1.000                 1
+3         residual sugar   g/dm³       0.600      65.000                 1
+4              chlorides   g/dm³       0.009       0.346                18
+5    free sulfur dioxide  mg/dm³       1.000      72.000                92
+6   total sulfur dioxide  mg/dm³       6.000     440.000                 0
+7                density   g/cm³       0.990       1.004               348
+8                     pH       -       2.900       3.900                79
+9              sulphates   g/dm³       0.220       1.080                35
+10               alcohol     vol       8.000      14.900                 0
+11               quality       -       3.000       9.000                 0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}outliers}\PY{o}{.}\PY{n}{describe}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{min}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{25}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{50}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{75}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{max}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{p}{:}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{44}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+     residual sugar  alcohol  citric acid  chlorides  fixed acidity  \textbackslash{}
+min       -0.481195      8.4     -0.28288      0.013            4.2
+25\%        1.800000      9.2      0.15000      0.072            6.5
+50\%        2.200000      9.9      0.50000      0.097            8.5
+75\%        4.800000     12.0      0.67000      0.301           11.5
+max       17.550000     14.9      1.00000      0.611           15.9
+
+     total sulfur dioxide  sulphates  density  free sulfur dioxide    pH  \textbackslash{}
+min            -19.857417   0.340000  0.98722                  3.0  2.74
+25\%             19.000000   0.679885  0.99580                  6.0  3.00
+50\%             46.000000   0.810000  0.99740                 12.0  3.07
+75\%             71.000000   1.060000  0.99990                 19.0  3.32
+max            233.000000   2.000000  1.00369                 93.0  4.01
+
+     volatile acidity  quality
+min          0.170000      3.0
+25\%          0.412244      5.0
+50\%          0.540000      5.0
+75\%          0.660000      6.0
+max          1.580000      8.0
+\end{Verbatim}
+\end{tcolorbox}
+        
+    De la tabla anterior vemos que la mayoría de los valores se encuentran
+en el rango normal de cada variable, los que si están fuera de lo normal
+son los valores negativos de las variables residual sugar, total sulfur
+dioxide, citric acid. Además como ya veíamos los valores arriba de 0.346
+de la variable chlorides.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{45}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{new\PYZus{}n\PYZus{}outliers} \PY{o}{=} \PY{n}{df\PYZus{}outliers}\PY{p}{[}\PY{p}{(}\PY{n}{df\PYZus{}outliers}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{chlorides}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mf}{0.346}\PY{p}{)} \PY{o}{|} \PY{p}{(}\PY{n}{df\PYZus{}outliers}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{citric acid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)} \PY{o}{|} \PY{p}{(}\PY{n}{df\PYZus{}outliers}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{residual sugar}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{l+m+mf}{0.6}\PY{p}{)} \PY{o}{|} \PY{p}{(}\PY{n}{df\PYZus{}outliers}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total sulfur dioxide}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{l+m+mi}{6}\PY{p}{)} \PY{o}{|} \PY{p}{(}\PY{n}{df\PYZus{}outliers}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{density}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{l+m+mf}{0.99}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{46}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{}Eliminamos esos valores (0.4\PYZpc{} de la muestra)}
+\PY{n}{df\PYZus{}clean} \PY{o}{=} \PY{n}{imputed\PYZus{}df}\PY{o}{.}\PY{n}{drop}\PY{p}{(}\PY{n}{df\PYZus{}outliers}\PY{o}{.}\PY{n}{index}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{47}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Quitando valores atípicos que salen por el método Isolation Forest}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Dimensión anterior:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{N}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{, nueva dimensión:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{df\PYZus{}clean}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Dimensión anterior: 6497 , nueva dimensión: 6432
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{48}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Si quitáramos valores atípicos de la variable density y de los valores atípicos que vemos con el método Isolation Forest}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Dimensión anterior:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{N}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{, nueva dimensión:}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{N}\PY{o}{\PYZhy{}}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{chlorides}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZgt{}} \PY{l+m+mf}{0.346}\PY{p}{)} \PY{o}{|} \PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{citric acid}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{l+m+mi}{0}\PY{p}{)} \PY{o}{|} \PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{residual sugar}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{l+m+mf}{0.6}\PY{p}{)} \PY{o}{|} \PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{total sulfur dioxide}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{l+m+mi}{6}\PY{p}{)} \PY{o}{|} \PY{p}{(}\PY{n}{imputed\PYZus{}df}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{density}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{\PYZlt{}} \PY{l+m+mf}{0.99}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{shape}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Dimensión anterior: 6497 , nueva dimensión: 6113
+    \end{Verbatim}
+
+    \textbf{Variable Quality}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{49}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_70_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{50}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{decimales\PYZus{}num} \PY{o}{=} \PY{p}{(}\PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{str}\PY{p}{)}\PY{o}{.}\PY{n}{str}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{.}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{expand}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)} \PY{o}{!=} \PY{l+m+mi}{0}\PY{p}{)}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{)}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Valores con decimales:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{decimales\PYZus{}num}\PY{p}{)}
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Proporción con decimales:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}0:.2\PYZpc{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{decimales\PYZus{}num}\PY{o}{/}\PY{n}{N}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Valores con decimales: 586
+Proporción con decimales: 9.02\%
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{51}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{astype}\PY{p}{(}\PY{n+nb}{int}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{52}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{n}{normalize}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{o}{.}\PY{n}{sort\PYZus{}index}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{apply}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}0:.2\PYZpc{}\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{x}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{52}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+quality
+3     0.34\%
+4     3.36\%
+5    35.42\%
+6    42.96\%
+7    15.19\%
+8     2.67\%
+9     0.06\%
+Name: proportion, dtype: object
+\end{Verbatim}
+\end{tcolorbox}
+        
+    Los valores decimales de \textbf{quality} fueron ajustados a enteros con
+el fin de mantener consistencia con la definición original de la
+variable y facilitar el análisis estadístico.
+
+    \hypertarget{describe-estaduxedsticamente-cada-variable-del-conjunto-de-datos-y-anota-las-observaciones-relevantes-con-respecto-a-la-tendencia-central-y-dispersiuxf3n.}{%
+\subsection{3.- Describe estadísticamente cada variable del conjunto de
+datos y anota las observaciones relevantes con respecto a la tendencia
+central y
+dispersión.}\label{describe-estaduxedsticamente-cada-variable-del-conjunto-de-datos-y-anota-las-observaciones-relevantes-con-respecto-a-la-tendencia-central-y-dispersiuxf3n.}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}clean}\PY{o}{.}\PY{n}{describe}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{mean}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{std}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{min}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{25}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{50}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{75}\PY{l+s+s1}{\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{max}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{T}
+\end{Verbatim}
+\end{tcolorbox}
+
+            \begin{tcolorbox}[breakable, size=fbox, boxrule=.5pt, pad at break*=1mm, opacityfill=0]
+\prompt{Out}{outcolor}{53}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+                       count        mean        std       min      25\%  \textbackslash{}
+fixed acidity         6432.0    7.197885   1.227256  3.800000   6.4000
+volatile acidity      6432.0    0.337778   0.155747 -0.261265   0.2300
+citric acid           6432.0    0.317302   0.138762  0.000000   0.2500
+residual sugar        6432.0    5.452255   4.751851 -3.297837   1.8000
+chlorides             6432.0    0.054715   0.028541  0.009000   0.0380
+free sulfur dioxide   6432.0   30.665088  17.597988 -0.813248  17.0000
+total sulfur dioxide  6432.0  115.940528  55.295073 -2.687222  79.0000
+density               6432.0    0.994668   0.002978  0.987110   0.9923
+pH                    6432.0    3.218681   0.157997  2.720000   3.1100
+sulphates             6432.0    0.528178   0.138621  0.220000   0.4400
+alcohol               6432.0   10.493253   1.182546  8.000000   9.5000
+quality               6432.0    5.775653   0.856458  3.000000   5.0000
+
+                             50\%        75\%        max
+fixed acidity           7.000000    7.70000   15.00000
+volatile acidity        0.290221    0.40000    1.33000
+citric acid             0.310000    0.39000    1.66000
+residual sugar          3.100000    8.10000   65.80000
+chlorides               0.047000    0.06400    0.40100
+free sulfur dioxide    29.000000   41.00000  289.00000
+total sulfur dioxide  119.000000  155.00000  440.00000
+density                 0.994835    0.99692    1.03898
+pH                      3.210000    3.32000    3.90000
+sulphates               0.502864    0.60000    1.98000
+alcohol                10.300000   11.30000   14.20000
+quality                 6.000000    6.00000    9.00000
+\end{Verbatim}
+\end{tcolorbox}
+        
+    \begin{itemize}
+\tightlist
+\item
+  \textbf{El 76\% de la muestra corresponden a vinos blancos.}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{54}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{type}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{p}{)}\PY{o}{.}\PY{n}{plot}\PY{o}{.}\PY{n}{pie}\PY{p}{(}
+    \PY{n}{autopct}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZpc{}1.1f}\PY{l+s+si}{\PYZpc{}\PYZpc{}}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+    \PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{,}
+    \PY{c+c1}{\PYZsh{}colors=sns.color\PYZus{}palette(\PYZdq{}Set2\PYZdq{}),}
+    \PY{n}{title}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Distribución de alcohol por categorías}\PY{l+s+s2}{\PYZdq{}}
+\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}  \PY{c+c1}{\PYZsh{} quita la etiqueta del eje y}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_78_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{itemize}
+\tightlist
+\item
+  \textbf{El porcentaje de alcohol de los vinos se concentra en 10\% y
+  el 15\% (media del 10\%).}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{55}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Definir los bordes de los intervalos}
+\PY{n}{bins} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{8}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{15}\PY{p}{]}
+\PY{n}{labels} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{8\PYZhy{}9}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{9\PYZhy{}10}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{10\PYZhy{}15}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{} Crear variable categórica ordenada}
+\PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alcohol\PYZus{}cat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{cut}\PY{p}{(}
+    \PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alcohol}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} 
+    \PY{n}{bins}\PY{o}{=}\PY{n}{bins}\PY{p}{,} 
+    \PY{n}{labels}\PY{o}{=}\PY{n}{labels}\PY{p}{,} 
+    \PY{n}{include\PYZus{}lowest}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+    \PY{n}{ordered}\PY{o}{=}\PY{k+kc}{True}
+\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Calculamos porcentajes}
+\PY{n}{counts} \PY{o}{=} \PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alcohol\PYZus{}cat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{n}{normalize}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{p}{)}
+\PY{n}{counts}\PY{o}{.}\PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{categoria}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{porcentaje}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{barplot}\PY{p}{(}
+    \PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{categoria}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+    \PY{n}{y}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{porcentaje}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+    \PY{n}{hue}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{categoria}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}       \PY{c+c1}{\PYZsh{} aquí usamos hue}
+    \PY{n}{data}\PY{o}{=}\PY{n}{counts}\PY{p}{,} 
+    \PY{c+c1}{\PYZsh{}palette=\PYZdq{}Set2\PYZdq{}, }
+    \PY{n}{legend}\PY{o}{=}\PY{k+kc}{False}           \PY{c+c1}{\PYZsh{} quitamos la leyenda duplicada}
+\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Distribución de alcohol por categorías (}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{14}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Categoría de Alcohol}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Porcentaje}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_80_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{itemize}
+\tightlist
+\item
+  \textbf{La mediana del pH se asimila con la media (3.22) y tiene una
+  distribución casi simétrica. El valor de la media bajo hace sentido
+  con los vinos, ya que tienen pH bajos (baja acidez).}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{56}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{pH} \PY{o}{=} \PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{pH}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n+nb}{print}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{a) Media:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}0:.4f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{pH}\PY{o}{.}\PY{n}{mean}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{,} 
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{b) Desviación Estándar:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}0:.4f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{pH}\PY{o}{.}\PY{n}{std}\PY{p}{(}\PY{p}{)}\PY{p}{)}\PY{p}{,}
+      \PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{o}{+}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{c) Mediana:}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+si}{\PYZob{}0:.4f\PYZcb{}}\PY{l+s+s1}{\PYZsq{}}\PY{o}{.}\PY{n}{format}\PY{p}{(}\PY{n}{pH}\PY{o}{.}\PY{n}{quantile}\PY{p}{(}\PY{l+m+mf}{0.5}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mf}{3.2}\PY{p}{)}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}\PY{n}{pH}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Distribución de la variable pH}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+a) Media: 3.2187
+b) Desviación Estándar: 0.1580
+c) Mediana: 3.2100
+
+    \end{Verbatim}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_82_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{itemize}
+\tightlist
+\item
+  \textbf{La calidad de los vinos se concentra en el rango de 5 a 7, lo
+  cual hace sentido con la media de 5.7.}
+\end{itemize}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{57}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{\PYZsh{} Definir los bordes de los intervalos}
+\PY{n}{bins} \PY{o}{=} \PY{p}{[}\PY{l+m+mi}{3}\PY{p}{,} \PY{l+m+mi}{5}\PY{p}{,} \PY{l+m+mi}{7}\PY{p}{,} \PY{l+m+mi}{9}\PY{p}{]}
+\PY{n}{labels} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Mala (3\PYZhy{}5)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Media (5\PYZhy{}7)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Buena (7\PYZhy{}9)}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{c+c1}{\PYZsh{} Crear variable categórica ordenada}
+\PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality\PYZus{}cat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{cut}\PY{p}{(}
+    \PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} 
+    \PY{n}{bins}\PY{o}{=}\PY{n}{bins}\PY{p}{,} 
+    \PY{n}{labels}\PY{o}{=}\PY{n}{labels}\PY{p}{,} 
+    \PY{n}{include\PYZus{}lowest}\PY{o}{=}\PY{k+kc}{True}\PY{p}{,}
+    \PY{n}{ordered}\PY{o}{=}\PY{k+kc}{True}
+\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Calculamos porcentajes}
+\PY{n}{counts} \PY{o}{=} \PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality\PYZus{}cat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{o}{.}\PY{n}{value\PYZus{}counts}\PY{p}{(}\PY{n}{normalize}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{o}{.}\PY{n}{reset\PYZus{}index}\PY{p}{(}\PY{p}{)}
+\PY{n}{counts}\PY{o}{.}\PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{categoria}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{porcentaje}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{10}\PY{p}{,}\PY{l+m+mi}{3}\PY{p}{)}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{barplot}\PY{p}{(}
+    \PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{categoria}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+    \PY{n}{y}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{porcentaje}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} 
+    \PY{n}{hue}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{categoria}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}       \PY{c+c1}{\PYZsh{} aquí usamos hue}
+    \PY{n}{data}\PY{o}{=}\PY{n}{counts}\PY{p}{,} 
+    \PY{c+c1}{\PYZsh{}palette=\PYZdq{}Set2\PYZdq{}, }
+    \PY{n}{legend}\PY{o}{=}\PY{k+kc}{False}           \PY{c+c1}{\PYZsh{} quitamos la leyenda duplicada}
+\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Distribución quality}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{fontsize}\PY{o}{=}\PY{l+m+mi}{14}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Categoría de quality}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Porcentaje}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_84_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{realiza-una-comparativa-de-variables-con-respecto-al-tipo-de-vinos-de-tu-interuxe9s.-por-ejemplo-los-vinos-tintos-tienen-muxe1s-acidez-fija-que-los-blancos}{%
+\subsection{4.- Realiza una comparativa de variables con respecto al
+tipo de vinos de tu interés. Por ejemplo, ¿Los vinos tintos tienen más
+acidez fija que los
+blancos?}\label{realiza-una-comparativa-de-variables-con-respecto-al-tipo-de-vinos-de-tu-interuxe9s.-por-ejemplo-los-vinos-tintos-tienen-muxe1s-acidez-fija-que-los-blancos}}
+
+    \hypertarget{la-relaciuxf3n-entre-el-azuxfacar-residual-y-la-densidad-es-diferente-entre-vinos-tintos-y-blancos}{%
+\subsubsection{¿La relación entre el azúcar residual y la densidad es
+diferente entre vinos tintos y
+blancos?}\label{la-relaciuxf3n-entre-el-azuxfacar-residual-y-la-densidad-es-diferente-entre-vinos-tintos-y-blancos}}
+
+    En los vinos blancos se observa una mayor cantidad de azúcar residual,
+lo que incrementa su densidad y favorece su perfil como vinos más
+dulces. En contraste, los vinos tintos suelen presentar un contenido
+mucho menor de azúcar residual, lo que los caracteriza como vinos más
+secos.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{58}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{palette} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{red}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}722F37}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}E6AF2E}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}  \PY{c+c1}{\PYZsh{} burdeos y dorado}
+
+\PY{n}{sns}\PY{o}{.}\PY{n}{lmplot}\PY{p}{(}
+    \PY{n}{data}\PY{o}{=}\PY{n}{df\PYZus{}clean}\PY{p}{,}
+    \PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{density}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{residual sugar}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+    \PY{n}{col}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{type}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{hue}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{type}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}             \PY{c+c1}{\PYZsh{} \PYZlt{}\PYZhy{}\PYZhy{} clave}
+    \PY{n}{palette}\PY{o}{=}\PY{n}{palette}\PY{p}{,} \PY{n}{legend}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,}
+    \PY{n}{height}\PY{o}{=}\PY{l+m+mi}{5}\PY{p}{,} \PY{n}{aspect}\PY{o}{=}\PY{l+m+mf}{1.2}\PY{p}{,}
+    \PY{n}{scatter\PYZus{}kws}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{alpha}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}\PY{l+m+mf}{0.6}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{s}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:}\PY{l+m+mi}{40}\PY{p}{\PYZcb{}}\PY{p}{,}
+\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{suptitle}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Relación entre Density y Residual Sugar por tipo de vino}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{y}\PY{o}{=}\PY{l+m+mf}{1.05}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_88_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{los-vinos-tintos-tienen-muxe1s-acidez-fija-que-los-blancos}{%
+\subsubsection{¿Los vinos tintos tienen más acidez fija que los
+blancos?}\label{los-vinos-tintos-tienen-muxe1s-acidez-fija-que-los-blancos}}
+
+    Los resultados muestran que los vinos tintos presentan en promedio una
+mayor acidez fija que los blancos, lo que se traduce en sabores más
+intensos, estructura y mayor potencial de guarda. En contraste, los
+vinos blancos, al tener una acidez fija más baja, tienden a ser más
+frescos, ligeros y fáciles de beber.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{59}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{n}{figsize}\PY{o}{=}\PY{p}{(}\PY{l+m+mi}{8}\PY{p}{,}\PY{l+m+mi}{6}\PY{p}{)}\PY{p}{)}
+\PY{n}{sns}\PY{o}{.}\PY{n}{histplot}\PY{p}{(}
+    \PY{n}{data}\PY{o}{=}\PY{n}{df\PYZus{}clean}\PY{p}{,}
+    \PY{n}{x}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{fixed acidity}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}     \PY{c+c1}{\PYZsh{} o \PYZdq{}volatile acidity\PYZdq{}}
+    \PY{n}{hue}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{type}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}            \PY{c+c1}{\PYZsh{} separa por tipo de vino}
+    \PY{n}{palette}\PY{o}{=}\PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{red}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}722F37}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}E6AF2E}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}\PY{p}{,}
+    \PY{n}{element}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{step}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}        \PY{c+c1}{\PYZsh{} estilo de línea, más claro para comparar}
+    \PY{n}{stat}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{density}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}        \PY{c+c1}{\PYZsh{} normaliza para comparar distribuciones}
+    \PY{n}{common\PYZus{}norm}\PY{o}{=}\PY{k+kc}{False}\PY{p}{,}     \PY{c+c1}{\PYZsh{} cada grupo con su propia escala}
+    \PY{n}{bins}\PY{o}{=}\PY{l+m+mi}{30}\PY{p}{,}               \PY{c+c1}{\PYZsh{} número de intervalos}
+    \PY{n}{alpha}\PY{o}{=}\PY{l+m+mf}{0.6}
+\PY{p}{)}
+
+\PY{n}{plt}\PY{o}{.}\PY{n}{title}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Distribución de la acidez fija por tipo de vino}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{xlabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Fixed Acidity (g/dm³)}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{ylabel}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Densidad}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_91_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{p5.--realiza-un-anuxe1lisis-de-las-variables-con-respecto-a-la-calidad-del-vino.-los-vinos-de-mejor-calidad-tienen-muxe1s-alcohol-muxe1s-acidez-fija-menor-azuxfacar-residual-etc.-hint.-puedes-cortar-y-agrupar-la-calidad-del-vino-en-buena-o-mala-o-en-mala-media-buena-si-crees-que-te-ayudaruxeda-al-anuxe1lisis.}{%
+\subsection{P5.- Realiza un análisis de las variables con respecto a la
+calidad del vino. ¿Los vinos de mejor calidad tienen más alcohol, más
+acidez fija, menor azúcar residual, etc.? (Hint. Puedes cortar y agrupar
+la calidad del vino en buena o mala o en mala, media, buena si crees que
+te ayudaría al
+análisis).}\label{p5.--realiza-un-anuxe1lisis-de-las-variables-con-respecto-a-la-calidad-del-vino.-los-vinos-de-mejor-calidad-tienen-muxe1s-alcohol-muxe1s-acidez-fija-menor-azuxfacar-residual-etc.-hint.-puedes-cortar-y-agrupar-la-calidad-del-vino-en-buena-o-mala-o-en-mala-media-buena-si-crees-que-te-ayudaruxeda-al-anuxe1lisis.}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{60}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{quality\PYZus{}cat\PYZus{}word}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{quality\PYZus{}cat}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{o}{.}\PY{n}{str}\PY{o}{.}\PY{n}{split}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ }\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{expand}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{c+c1}{\PYZsh{} categoría}
+
+\PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{quality\PYZus{}cat\PYZus{}word}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]} \PY{o}{=} \PY{n}{pd}\PY{o}{.}\PY{n}{Categorical}\PY{p}{(}
+    \PY{n}{df\PYZus{}clean}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{quality\PYZus{}cat\PYZus{}word}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+    \PY{n}{categories}\PY{o}{=}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Mala}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Media}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Buena}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,}
+    \PY{n}{ordered}\PY{o}{=}\PY{k+kc}{True}
+\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} \PYZsq{}count\PYZsq{} en columna quality y en las demás los promedios}
+\PY{n}{calidad} \PY{o}{=} \PY{n}{df\PYZus{}clean}\PY{o}{.}\PY{n}{groupby}\PY{p}{(}\PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{type}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{quality\PYZus{}cat\PYZus{}word}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{,} \PY{n}{observed}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{o}{.}\PY{n}{agg}\PY{p}{(}
+    \PY{p}{\PYZob{}}\PY{n}{col}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{mean}\PY{l+s+s2}{\PYZdq{}} \PY{k}{for} \PY{n}{col} \PY{o+ow}{in} \PY{n}{var\PYZus{}num}\PY{p}{\PYZcb{}} \PY{o}{|} \PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{quality}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{count}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{mean}\PY{l+s+s2}{\PYZdq{}}\PY{p}{]}\PY{p}{\PYZcb{}}
+\PY{p}{)}
+
+\PY{c+c1}{\PYZsh{} Renombrar columnas}
+\PY{n}{calidad}\PY{o}{.}\PY{n}{columns} \PY{o}{=} \PY{p}{[}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{c}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZus{}}\PY{l+s+si}{\PYZob{}}\PY{n}{c}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}} \PY{k}{if} \PY{n}{c}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{]} \PY{o}{!=} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZdq{}} \PY{k}{else} \PY{n}{c}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]} \PY{k}{for} \PY{n}{c} \PY{o+ow}{in} \PY{n}{calidad}\PY{o}{.}\PY{n}{columns}\PY{p}{]}
+
+\PY{n}{calidad} \PY{o}{=} \PY{n}{calidad}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality\PYZus{}mean}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]} \PY{o}{+} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{set}\PY{p}{(}\PY{n}{calidad}\PY{o}{.}\PY{n}{columns}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n+nb}{set}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality\PYZus{}mean}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{]}
+
+\PY{n}{display}\PY{p}{(}\PY{n}{calidad}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    
+    \begin{Verbatim}[commandchars=\\\{\}]
+                        quality\_count  quality\_mean  sulphates\_mean  \textbackslash{}
+type  quality\_cat\_word                                                
+red   Mala                        759      4.905138        0.610624   
+      Media                       773      6.218629        0.689872   
+      Buena                        12      8.000000        0.782036   
+white Mala                       1757      4.892999        0.481221   
+      Media                      2967      6.272329        0.494382   
+      Buena                       164      8.024390        0.480381   
+
+                        total sulfur dioxide\_mean   pH\_mean  \textbackslash{}
+type  quality\_cat\_word                                        
+red   Mala                              54.059367  3.315298   
+      Media                             38.938495  3.314269   
+      Buena                             26.364308  3.286669   
+white Mala                             148.206549  3.172978   
+      Media                            132.487787  3.195600   
+      Buena                            126.783039  3.223220   
+
+                        fixed acidity\_mean  free sulfur dioxide\_mean  \textbackslash{}
+type  quality\_cat\_word                                                 
+red   Mala                        8.106596                 16.553452   
+      Media                       8.469396                 15.404405   
+      Buena                       8.203763                 14.750000   
+white Mala                        6.964783                 35.440551   
+      Media                       6.799338                 35.133968   
+      Buena                       6.633184                 37.058756   
+
+                        volatile acidity\_mean  alcohol\_mean  \textbackslash{}
+type  quality\_cat\_word                                        
+red   Mala                           0.582049      9.935129   
+      Media                          0.473979     10.865275   
+      Buena                          0.391306     12.069157   
+white Mala                           0.305705      9.845229   
+      Media                          0.262276     10.852952   
+      Buena                          0.270938     11.642531   
+
+                        residual sugar\_mean  citric acid\_mean  density\_mean  \textbackslash{}
+type  quality\_cat\_word                                                        
+red   Mala                         2.497604          0.230115      0.997030   
+      Media                        2.506404          0.297327      0.996430   
+      Buena                        2.550000          0.374896      0.994893   
+white Mala                         7.042288          0.334097      0.995162   
+      Media                        6.032496          0.334050      0.993445   
+      Buena                        5.691817          0.327813      0.992260   
+
+                        chlorides\_mean  
+type  quality\_cat\_word                  
+red   Mala                    0.086229  
+      Media                   0.080860  
+      Buena                   0.070417  
+white Mala                    0.050675  
+      Media                   0.043078  
+      Buena                   0.038317  
+    \end{Verbatim}
+
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{61}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{calidad\PYZus{}copy} \PY{o}{=} \PY{n}{calidad}\PY{o}{.}\PY{n}{copy}\PY{p}{(}\PY{p}{)}
+\PY{n}{calidad\PYZus{}copy} \PY{o}{=} \PY{n}{calidad\PYZus{}copy}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb}{set}\PY{p}{(}\PY{n}{calidad}\PY{o}{.}\PY{n}{columns}\PY{p}{)}\PY{o}{\PYZhy{}}\PY{n+nb}{set}\PY{p}{(}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality\PYZus{}count}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{map}\PY{p}{(}\PY{k}{lambda} \PY{n}{x}\PY{p}{:} \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{x}\PY{l+s+si}{:}\PY{l+s+s2}{.4f}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{calidad\PYZus{}copy}\PY{o}{.}\PY{n}{to\PYZus{}csv}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{\PYZti{}/Downloads/wine\PYZus{}agg\PYZus{}table.csv}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{69}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k+kn}{from} \PY{n+nn}{pandas}\PY{n+nn}{.}\PY{n+nn}{api}\PY{n+nn}{.}\PY{n+nn}{types} \PY{k+kn}{import} \PY{n}{CategoricalDtype}
+
+\PY{k}{class} \PY{n+nc}{analyze\PYZus{}by\PYZus{}cat}\PY{p}{:}
+    \PY{k}{def} \PY{n+nf+fm}{\PYZus{}\PYZus{}init\PYZus{}\PYZus{}}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{df}\PY{p}{,} \PY{n}{num\PYZus{}vars}\PY{p}{,} \PY{n}{cat\PYZus{}vars}\PY{p}{)}\PY{p}{:}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df} \PY{o}{=} \PY{n}{df}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{num\PYZus{}vars} \PY{o}{=} \PY{n}{num\PYZus{}vars}
+        \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{cat\PYZus{}vars} \PY{o}{=} \PY{n}{cat\PYZus{}vars}
+
+    \PY{k}{def} \PY{n+nf}{plot\PYZus{}box\PYZus{}hist\PYZus{}by\PYZus{}cat}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{var}\PY{p}{,} \PY{n}{category\PYZus{}col}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{quality\PYZus{}cat\PYZus{}word}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{hue\PYZus{}col}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{type}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} paleta “vinícola”}
+        \PY{n}{palette} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{red}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}722F37}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}E6AF2E}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}  \PY{c+c1}{\PYZsh{} burdeos y dorado}
+    
+        \PY{c+c1}{\PYZsh{} respetar el orden de las categorías si existe}
+        \PY{k}{if} \PY{n+nb}{isinstance}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n}{category\PYZus{}col}\PY{p}{]}\PY{o}{.}\PY{n}{dtype}\PY{p}{,} \PY{n}{CategoricalDtype}\PY{p}{)}\PY{p}{:}
+            \PY{n}{cats} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n}{category\PYZus{}col}\PY{p}{]}\PY{o}{.}\PY{n}{cat}\PY{o}{.}\PY{n}{categories}\PY{p}{)}
+        \PY{k}{else}\PY{p}{:}
+            \PY{n}{cats} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n}{pd}\PY{o}{.}\PY{n}{unique}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n}{category\PYZus{}col}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+    
+        \PY{n}{fig} \PY{o}{=} \PY{n}{make\PYZus{}subplots}\PY{p}{(}
+            \PY{n}{rows}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{cols}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,}
+            \PY{n}{column\PYZus{}widths}\PY{o}{=}\PY{p}{[}\PY{l+m+mf}{0.55}\PY{p}{,} \PY{l+m+mf}{0.45}\PY{p}{]}\PY{p}{,}
+            \PY{n}{subplot\PYZus{}titles}\PY{o}{=}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{var}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ — Boxplot por }\PY{l+s+si}{\PYZob{}}\PY{n}{category\PYZus{}col}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{var}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ — Histograma por }\PY{l+s+si}{\PYZob{}}\PY{n}{hue\PYZus{}col}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{p}{)}
+    
+        \PY{c+c1}{\PYZsh{} \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{} Columna 1: BOX PLOT (x = categoría, color = tipo) \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}
+        \PY{k}{for} \PY{n}{t}\PY{p}{,} \PY{n}{color} \PY{o+ow}{in} \PY{n}{palette}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+            \PY{n}{df\PYZus{}t} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n}{hue\PYZus{}col}\PY{p}{]} \PY{o}{==} \PY{n}{t}\PY{p}{]}
+            \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}trace}\PY{p}{(}
+                \PY{n}{go}\PY{o}{.}\PY{n}{Box}\PY{p}{(}
+                    \PY{n}{x}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{Categorical}\PY{p}{(}\PY{n}{df\PYZus{}t}\PY{p}{[}\PY{n}{category\PYZus{}col}\PY{p}{]}\PY{p}{,} \PY{n}{categories}\PY{o}{=}\PY{n}{cats}\PY{p}{,} \PY{n}{ordered}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{,}
+                    \PY{n}{y}\PY{o}{=}\PY{n}{df\PYZus{}t}\PY{p}{[}\PY{n}{var}\PY{p}{]}\PY{p}{,}
+                    \PY{n}{name}\PY{o}{=}\PY{n}{t}\PY{p}{,}
+                    \PY{n}{marker\PYZus{}color}\PY{o}{=}\PY{n}{color}\PY{p}{,}
+                    \PY{n}{boxmean}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sd}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                    \PY{n}{legendgroup}\PY{o}{=}\PY{n}{t}\PY{p}{,}
+                    \PY{n}{showlegend}\PY{o}{=}\PY{k+kc}{True}  \PY{c+c1}{\PYZsh{} mostramos leyenda aquí}
+                \PY{p}{)}\PY{p}{,}
+                \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{1}
+            \PY{p}{)}
+    
+        \PY{c+c1}{\PYZsh{} \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{} Columna 2: HISTOGRAMAS superpuestos (por tipo) \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}
+        \PY{k}{for} \PY{n}{t}\PY{p}{,} \PY{n}{color} \PY{o+ow}{in} \PY{n}{palette}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+            \PY{n}{df\PYZus{}t} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n}{hue\PYZus{}col}\PY{p}{]} \PY{o}{==} \PY{n}{t}\PY{p}{]}
+            \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}trace}\PY{p}{(}
+                \PY{n}{go}\PY{o}{.}\PY{n}{Histogram}\PY{p}{(}
+                    \PY{n}{x}\PY{o}{=}\PY{n}{df\PYZus{}t}\PY{p}{[}\PY{n}{var}\PY{p}{]}\PY{p}{,}
+                    \PY{n}{name}\PY{o}{=}\PY{n}{t}\PY{p}{,}
+                    \PY{n}{marker\PYZus{}color}\PY{o}{=}\PY{n}{color}\PY{p}{,}
+                    \PY{n}{opacity}\PY{o}{=}\PY{l+m+mf}{0.55}\PY{p}{,}
+                    \PY{n}{nbinsx}\PY{o}{=}\PY{l+m+mi}{40}\PY{p}{,}
+                    \PY{n}{histnorm}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{probability density}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                    \PY{n}{legendgroup}\PY{o}{=}\PY{n}{t}\PY{p}{,}
+                    \PY{n}{showlegend}\PY{o}{=}\PY{k+kc}{False}  \PY{c+c1}{\PYZsh{} ya aparece en col 1}
+                \PY{p}{)}\PY{p}{,}
+                \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{2}
+            \PY{p}{)}
+    
+        \PY{c+c1}{\PYZsh{} layout}
+        \PY{n}{fig}\PY{o}{.}\PY{n}{update\PYZus{}layout}\PY{p}{(}
+            \PY{n}{title\PYZus{}text}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variable numérica: }\PY{l+s+si}{\PYZob{}}\PY{n}{var}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{n}{height}\PY{o}{=}\PY{l+m+mi}{420}\PY{p}{,} \PY{n}{width}\PY{o}{=}\PY{l+m+mi}{900}\PY{p}{,}
+            \PY{n}{boxmode}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{group}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}          \PY{c+c1}{\PYZsh{} agrupa cajas por categoría}
+            \PY{n}{barmode}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{overlay}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}        \PY{c+c1}{\PYZsh{} superpone histogramas}
+            \PY{n}{margin}\PY{o}{=}\PY{n+nb}{dict}\PY{p}{(}\PY{n}{t}\PY{o}{=}\PY{l+m+mi}{60}\PY{p}{)}
+        \PY{p}{)}
+        \PY{n}{fig}\PY{o}{.}\PY{n}{update\PYZus{}xaxes}\PY{p}{(}\PY{n}{title\PYZus{}text}\PY{o}{=}\PY{n}{category\PYZus{}col}\PY{p}{,} \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+        \PY{n}{fig}\PY{o}{.}\PY{n}{update\PYZus{}yaxes}\PY{p}{(}\PY{n}{title\PYZus{}text}\PY{o}{=}\PY{n}{var}\PY{p}{,}           \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+        \PY{n}{fig}\PY{o}{.}\PY{n}{update\PYZus{}xaxes}\PY{p}{(}\PY{n}{title\PYZus{}text}\PY{o}{=}\PY{n}{var}\PY{p}{,}           \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}
+        \PY{n}{fig}\PY{o}{.}\PY{n}{update\PYZus{}yaxes}\PY{p}{(}\PY{n}{title\PYZus{}text}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{densidad}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}    \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}
+    
+    
+    \PY{k}{def} \PY{n+nf}{plot\PYZus{}box\PYZus{}hist\PYZus{}by\PYZus{}cat}\PY{p}{(}\PY{n+nb+bp}{self}\PY{p}{,} \PY{n}{var}\PY{p}{,} \PY{n}{category\PYZus{}col}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{quality\PYZus{}cat\PYZus{}word}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{hue\PYZus{}col}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{type}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}\PY{p}{:}
+        \PY{c+c1}{\PYZsh{} paleta “vinícola”}
+        \PY{n}{palette} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{red}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}722F37}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{white}\PY{l+s+s2}{\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZsh{}E6AF2E}\PY{l+s+s2}{\PYZdq{}}\PY{p}{\PYZcb{}}  \PY{c+c1}{\PYZsh{} burdeos y dorado}
+    
+        \PY{c+c1}{\PYZsh{} respetar el orden de las categorías si existe}
+        \PY{k}{if} \PY{n+nb}{isinstance}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n}{category\PYZus{}col}\PY{p}{]}\PY{o}{.}\PY{n}{dtype}\PY{p}{,} \PY{n}{CategoricalDtype}\PY{p}{)}\PY{p}{:}
+            \PY{n}{cats} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n}{category\PYZus{}col}\PY{p}{]}\PY{o}{.}\PY{n}{cat}\PY{o}{.}\PY{n}{categories}\PY{p}{)}
+        \PY{k}{else}\PY{p}{:}
+            \PY{n}{cats} \PY{o}{=} \PY{n+nb}{list}\PY{p}{(}\PY{n}{pd}\PY{o}{.}\PY{n}{unique}\PY{p}{(}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n}{category\PYZus{}col}\PY{p}{]}\PY{p}{)}\PY{p}{)}
+    
+        \PY{n}{fig} \PY{o}{=} \PY{n}{make\PYZus{}subplots}\PY{p}{(}
+            \PY{n}{rows}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{cols}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{,}
+            \PY{n}{column\PYZus{}widths}\PY{o}{=}\PY{p}{[}\PY{l+m+mf}{0.55}\PY{p}{,} \PY{l+m+mf}{0.45}\PY{p}{]}\PY{p}{,}
+            \PY{n}{subplot\PYZus{}titles}\PY{o}{=}\PY{p}{(}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{var}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ — Boxplot por }\PY{l+s+si}{\PYZob{}}\PY{n}{category\PYZus{}col}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+si}{\PYZob{}}\PY{n}{var}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{ — Histograma por }\PY{l+s+si}{\PYZob{}}\PY{n}{hue\PYZus{}col}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+        \PY{p}{)}
+    
+        \PY{c+c1}{\PYZsh{} \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{} Columna 1: BOX PLOT (x = categoría, color = tipo) \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}
+        \PY{k}{for} \PY{n}{t}\PY{p}{,} \PY{n}{color} \PY{o+ow}{in} \PY{n}{palette}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+            \PY{n}{df\PYZus{}t} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n}{hue\PYZus{}col}\PY{p}{]} \PY{o}{==} \PY{n}{t}\PY{p}{]}
+            \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}trace}\PY{p}{(}
+                \PY{n}{go}\PY{o}{.}\PY{n}{Box}\PY{p}{(}
+                    \PY{n}{x}\PY{o}{=}\PY{n}{pd}\PY{o}{.}\PY{n}{Categorical}\PY{p}{(}\PY{n}{df\PYZus{}t}\PY{p}{[}\PY{n}{category\PYZus{}col}\PY{p}{]}\PY{p}{,} \PY{n}{categories}\PY{o}{=}\PY{n}{cats}\PY{p}{,} \PY{n}{ordered}\PY{o}{=}\PY{k+kc}{True}\PY{p}{)}\PY{p}{,}
+                    \PY{n}{y}\PY{o}{=}\PY{n}{df\PYZus{}t}\PY{p}{[}\PY{n}{var}\PY{p}{]}\PY{p}{,}
+                    \PY{n}{name}\PY{o}{=}\PY{n}{t}\PY{p}{,}
+                    \PY{n}{marker\PYZus{}color}\PY{o}{=}\PY{n}{color}\PY{p}{,}
+                    \PY{n}{boxmean}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{sd}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                    \PY{n}{legendgroup}\PY{o}{=}\PY{n}{t}\PY{p}{,}
+                    \PY{n}{showlegend}\PY{o}{=}\PY{k+kc}{True}  \PY{c+c1}{\PYZsh{} mostramos leyenda aquí}
+                \PY{p}{)}\PY{p}{,}
+                \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{1}
+            \PY{p}{)}
+    
+        \PY{c+c1}{\PYZsh{} \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{} Columna 2: HISTOGRAMAS superpuestos (por tipo) \PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}\PYZhy{}}
+        \PY{k}{for} \PY{n}{t}\PY{p}{,} \PY{n}{color} \PY{o+ow}{in} \PY{n}{palette}\PY{o}{.}\PY{n}{items}\PY{p}{(}\PY{p}{)}\PY{p}{:}
+            \PY{n}{df\PYZus{}t} \PY{o}{=} \PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n+nb+bp}{self}\PY{o}{.}\PY{n}{df}\PY{p}{[}\PY{n}{hue\PYZus{}col}\PY{p}{]} \PY{o}{==} \PY{n}{t}\PY{p}{]}
+            \PY{n}{fig}\PY{o}{.}\PY{n}{add\PYZus{}trace}\PY{p}{(}
+                \PY{n}{go}\PY{o}{.}\PY{n}{Histogram}\PY{p}{(}
+                    \PY{n}{x}\PY{o}{=}\PY{n}{df\PYZus{}t}\PY{p}{[}\PY{n}{var}\PY{p}{]}\PY{p}{,}
+                    \PY{n}{name}\PY{o}{=}\PY{n}{t}\PY{p}{,}
+                    \PY{n}{marker\PYZus{}color}\PY{o}{=}\PY{n}{color}\PY{p}{,}
+                    \PY{n}{opacity}\PY{o}{=}\PY{l+m+mf}{0.55}\PY{p}{,}
+                    \PY{n}{nbinsx}\PY{o}{=}\PY{l+m+mi}{40}\PY{p}{,}
+                    \PY{n}{histnorm}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{probability density}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}
+                    \PY{n}{legendgroup}\PY{o}{=}\PY{n}{t}\PY{p}{,}
+                    \PY{n}{showlegend}\PY{o}{=}\PY{k+kc}{False}  \PY{c+c1}{\PYZsh{} ya aparece en col 1}
+                \PY{p}{)}\PY{p}{,}
+                \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{2}
+            \PY{p}{)}
+    
+        \PY{c+c1}{\PYZsh{} layout}
+        \PY{n}{fig}\PY{o}{.}\PY{n}{update\PYZus{}layout}\PY{p}{(}
+            \PY{n}{title\PYZus{}text}\PY{o}{=}\PY{l+s+sa}{f}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Variable numérica: }\PY{l+s+si}{\PYZob{}}\PY{n}{var}\PY{l+s+si}{\PYZcb{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}
+            \PY{n}{height}\PY{o}{=}\PY{l+m+mi}{420}\PY{p}{,} \PY{n}{width}\PY{o}{=}\PY{l+m+mi}{900}\PY{p}{,}
+            \PY{n}{boxmode}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{group}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}          \PY{c+c1}{\PYZsh{} agrupa cajas por categoría}
+            \PY{n}{barmode}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{overlay}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,}        \PY{c+c1}{\PYZsh{} superpone histogramas}
+            \PY{n}{margin}\PY{o}{=}\PY{n+nb}{dict}\PY{p}{(}\PY{n}{t}\PY{o}{=}\PY{l+m+mi}{60}\PY{p}{)}
+        \PY{p}{)}
+        \PY{n}{fig}\PY{o}{.}\PY{n}{update\PYZus{}xaxes}\PY{p}{(}\PY{n}{title\PYZus{}text}\PY{o}{=}\PY{n}{category\PYZus{}col}\PY{p}{,} \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+        \PY{n}{fig}\PY{o}{.}\PY{n}{update\PYZus{}yaxes}\PY{p}{(}\PY{n}{title\PYZus{}text}\PY{o}{=}\PY{n}{var}\PY{p}{,}           \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{)}
+        \PY{n}{fig}\PY{o}{.}\PY{n}{update\PYZus{}xaxes}\PY{p}{(}\PY{n}{title\PYZus{}text}\PY{o}{=}\PY{n}{var}\PY{p}{,}           \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}
+        \PY{n}{fig}\PY{o}{.}\PY{n}{update\PYZus{}yaxes}\PY{p}{(}\PY{n}{title\PYZus{}text}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{densidad}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}    \PY{n}{row}\PY{o}{=}\PY{l+m+mi}{1}\PY{p}{,} \PY{n}{col}\PY{o}{=}\PY{l+m+mi}{2}\PY{p}{)}
+    
+        \PY{n}{fig}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{70}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{analisis} \PY{o}{=} \PY{n}{analyze\PYZus{}by\PYZus{}cat}\PY{p}{(}\PY{n}{df\PYZus{}clean}\PY{p}{,} \PY{n}{var\PYZus{}num}\PY{p}{,} \PY{n}{var\PYZus{}cat}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{72}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{k}{for} \PY{n}{v} \PY{o+ow}{in} \PY{n}{analisis}\PY{o}{.}\PY{n}{num\PYZus{}vars}\PY{p}{:}
+    \PY{n}{analisis}\PY{o}{.}\PY{n}{plot\PYZus{}box\PYZus{}hist\PYZus{}by\PYZus{}cat}\PY{p}{(}\PY{n}{v}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{quality\PYZus{}cat\PYZus{}word}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{type}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_97_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_97_1.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_97_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_97_3.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_97_4.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_97_5.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_97_6.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_97_7.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_97_8.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_97_9.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_97_10.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_97_11.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \hypertarget{p6.--obtuxe9n-la-correlaciuxf3n-de-las-variables-y-grafica-su-matriz.-tiene-sentido-la-correlaciuxf3n-entre-las-variables-explica-el-porquuxe9-suxed-o-porquuxe9-no.}{%
+\subsection{P6.- Obtén la correlación de las variables y grafica su
+matriz. ¿Tiene sentido la correlación entre las variables? Explica el
+porqué sí o porqué
+no.}\label{p6.--obtuxe9n-la-correlaciuxf3n-de-las-variables-y-grafica-su-matriz.-tiene-sentido-la-correlaciuxf3n-entre-las-variables-explica-el-porquuxe9-suxed-o-porquuxe9-no.}}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{73}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{last\PYZus{}analisis} \PY{o}{=} \PY{n}{analyze}\PY{p}{(}\PY{n}{df\PYZus{}clean}\PY{p}{,} \PY{n}{var\PYZus{}num}\PY{p}{,} \PY{n}{var\PYZus{}cat}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{74}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{last\PYZus{}analisis}\PY{o}{.}\PY{n}{corr\PYZus{}matrix}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{burg}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_100_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{75}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{sns}\PY{o}{.}\PY{n}{pairplot}\PY{p}{(}\PY{n}{df\PYZus{}clean}\PY{o}{.}\PY{n}{loc}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{residual sugar}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{density}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{pH}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{quality}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{alcohol}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{]}\PY{p}{,} \PY{n}{diag\PYZus{}kind}\PY{o}{=}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{kde}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_101_0.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
