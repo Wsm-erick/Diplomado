@@ -3,6 +3,9 @@
 *.out
 *.log
 *.synctex.gz
+*.bbl
+*.blg
+*.toc
 
 # Jupyter
 *.ipynb_checkpoints/
