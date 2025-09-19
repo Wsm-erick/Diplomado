@@ -1,0 +1,120 @@
+\documentclass[10pt]{article}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx}
+\graphicspath{{png/}} % carpeta donde guardas los logos
+
+\usepackage{geometry}
+\geometry{left=10mm, right=10mm, top=18mm, bottom=15mm}
+
+\usepackage[dvipsnames, table]{xcolor}
+
+\usepackage[hyphens]{url}
+\usepackage[super]{cite}
+\usepackage{hyperref}
+
+% Configuración para url
+\hypersetup{colorlinks=true, urlcolor=RoyalBlue, linkcolor=Black, citecolor=Black}
+\Urlmuskip=0mu plus 1mu
+
+% Encabezados y pies de página
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+% Limpia encabezado y pie por defecto
+\fancyhf{}
+
+% Encabezado superior izquierdo: tu nombre
+\fancyhead[L]{Erick Adrian Orozpe Frias}
+
+% (opcional) Número de página a la derecha
+\fancyhead[R]{Universidad Nacional Autónoma de México}
+
+% --- Ajusta altura del pie para que quepan los logos ---
+\setlength{\footskip}{24pt}
+
+% Tamaño de los logos (muy pequeño)
+\newcommand{\logofes}{\raisebox{-0.3\height}{\includegraphics[height=0.7cm, keepaspectratio]{logo_fes}}}
+
+% Contenido del pie
+\fancyfoot[L]{\logofes\: Facultad de Estudios Superiores Acatlán}
+\fancyfoot[R]{\thepage}
+
+% paquetes para tablas
+%\usepackage{ltablex}
+%\keepXColumns
+%\usepackage{booktabs}
+
+\usepackage{array}
+\usepackage{float}
+
+\newcommand{\ltitle}[1]{
+    \begin{flushleft}
+        \Large % large o huge
+        \textbf{#1}
+    \end{flushleft}
+}
+
+\spanishdecimal{.}
+\setlength{\parskip}{0.5em}
+%\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+\begin{document}
+
+\section*{Descripción del dataset}
+
+El conjunto de datos \textit{Predict Students' Dropout and Academic Success}\,\footnote{\,Disponible en: \url{https://archive.ics.uci.edu/dataset/697/predict+students+dropout+and+academic+success}} contiene información académica, demográfica, socioeconómica y macroeconómica de \textbf{4,424 estudiantes} matriculados en un instituto de educación superior en Portugal. Incluye variables sobre antecedentes académicos, desempeño en los dos primeros semestres, situación financiera y características familiares, junto con indicadores de contexto económico (PIB, desempleo, inflación). 
+
+El objetivo principal es predecir el \textbf{estado final del estudiante}: \textit{abandono (dropout)}, \textit{continuación (enrolled)} o \textit{graduación (graduate)}.
+	
+\begin{table}[H]
+\centering
+\small
+\begin{tabular}{|c|p{5cm}|p{6.2cm}|p{3.2cm}|c|}
+\hline
+\textbf{No.} & \textbf{Variable Original} & \textbf{Descripción} & \textbf{Tipo de Dato} & \textbf{Unidades} \\ \hline
+1 & Marital status & Estado civil del estudiante & Categórica &  \\ \hline
+2 & Application mode & Modo/canal de aplicación & Categórica &  \\ \hline
+3 & Application order & Orden de aplicación (preferencia) & Numérica entera &  \\ \hline
+4 & Course & Curso/programa matriculado & Categórica &  \\ \hline
+5 & Daytime/evening attendance & Régimen: diurno/nocturno & Categórica binaria &  \\ \hline
+6 & Previous qualification & Nivel de estudios previos & Categórica &  \\ \hline
+7 & Previous qualification (grade) & Nota de la calificación previa & Numérica continua & 0–200 puntos \\ \hline
+8 & Nacionality & Nacionalidad del estudiante & Categórica &  \\ \hline
+9 & Mother's qualification & Nivel educativo de la madre & Categórica &  \\ \hline
+10 & Father's qualification & Nivel educativo del padre & Categórica &  \\ \hline
+11 & Mother's occupation & Ocupación de la madre & Categórica &  \\ \hline
+12 & Father's occupation & Ocupación del padre & Categórica &  \\ \hline
+13 & Admission grade & Nota de admisión al curso & Numérica continua & 0–200 puntos \\ \hline
+14 & Displaced & Estudiante desplazado de residencia & Categórica binaria &  \\ \hline
+15 & Educational special needs & Necesidades educativas especiales & Categórica binaria &  \\ \hline
+16 & Debtor & Condición de deudor & Categórica binaria &  \\ \hline
+17 & Tuition fees up to date & Pago de colegiatura al día & Categórica binaria &  \\ \hline
+18 & Gender & Sexo del estudiante & Categórica binaria &  \\ \hline
+19 & Scholarship holder & Estudiante con beca & Categórica binaria &  \\ \hline
+20 & Age at enrollment & Edad al inscribirse & Numérica entera & años \\ \hline
+21 & International & Condición internacional & Categórica binaria &  \\ \hline
+22 & Curricular units 1st sem (credited) & Unidades curriculares acreditadas 1er semestre & Numérica entera & conteo \\ \hline
+23 & Curricular units 1st sem (enrolled) & Unidades curriculares inscritas 1er semestre & Numérica entera & conteo \\ \hline
+24 & Curricular units 1st sem (evaluations) & Número de evaluaciones 1er semestre & Numérica entera & conteo \\ \hline
+25 & Curricular units 1st sem (approved) & Unidades curriculares aprobadas 1er semestre & Numérica entera & conteo \\ \hline
+26 & Curricular units 1st sem (grade) & Promedio de calificaciones 1er semestre & Numérica continua & 0–20 puntos \\ \hline
+27 & Curricular units 1st sem (without evaluations) & Unidades curriculares sin evaluación 1er semestre & Numérica entera & conteo \\ \hline
+28 & Curricular units 2nd sem (credited) & Unidades curriculares acreditadas 2º semestre & Numérica entera & conteo \\ \hline
+29 & Curricular units 2nd sem (enrolled) & Unidades curriculares inscritas 2º semestre & Numérica entera & conteo \\ \hline
+30 & Curricular units 2nd sem (evaluations) & Número de evaluaciones 2º semestre & Numérica entera & conteo \\ \hline
+31 & Curricular units 2nd sem (approved) & Unidades curriculares aprobadas 2º semestre & Numérica entera & conteo \\ \hline
+32 & Curricular units 2nd sem (grade) & Promedio de calificaciones 2º semestre & Numérica continua & 0–20 puntos \\ \hline
+33 & Curricular units 2nd sem (without evaluations) & Unidades curriculares sin evaluación 2º semestre & Numérica entera & conteo \\ \hline
+34 & Unemployment rate & Tasa de desempleo en el periodo & Numérica continua & \% \\ \hline
+35 & Inflation rate & Tasa de inflación en el periodo & Numérica continua & \% \\ \hline
+36 & GDP & Producto Interno Bruto & Numérica continua & \$ \\ \hline
+37 & Target & Resultado final: Dropout, Enrolled, Graduate & Categórica multiclase &  \\ \hline
+\end{tabular}
+\caption{Diccionario de variables del dataset Predict Students' Dropout and Academic Success (UCI).}
+
+\end{table}
+	
+\end{document}
