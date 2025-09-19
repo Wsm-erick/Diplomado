@@ -1,0 +1,8 @@
+Nombre de Variable,Rol,Tipo,Demográfico,Descripción,Unidades,Valores Faltantes
+Internacional,Característica,Entero,,"1 – sí, 0 – no",,no
+Unidades curriculares 1er sem (acreditadas),Característica,Entero,,Número de unidades curriculares acreditadas en el 1er semestre,,no
+Unidades curriculares 1er sem (inscritas),Característica,Entero,,Número de unidades curriculares inscritas en el 1er semestre,,no
+Unidades curriculares 1er sem (evaluaciones),Característica,Entero,,Número de evaluaciones de unidades curriculares en el 1er semestre,,no
+Unidades curriculares 1er sem (aprobadas),Característica,Entero,,Número de unidades curriculares aprobadas en el 1er semestre,,no
+Unidades curriculares 1er sem (nota),Característica,Entero,,Promedio de notas en el 1er semestre (entre 0 y 20),,no
+Unidades curriculares 1er sem (sin evaluaciones),Característica,Entero,,Número de unidades curriculares sin evaluación en el 1er semestre,,no
