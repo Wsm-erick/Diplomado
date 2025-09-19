@@ -1,38 +1,38 @@
-Variable Original,Variable en Español,Descripción (ES)
-Marital status,Estado civil,"1 – soltero, 2 – casado, 3 – viudo, 4 – divorciado, 5 – unión de hecho, 6 – legalmente separado"
-Application mode,Modo de aplicación,"Canal o contingente de ingreso (p. ej., 1ª fase, transferencia, cambio de curso/institución, etc.)"
-Application order,Orden de aplicación,"Preferencia de la solicitud (0 = primera opción, 9 = última opción)"
-Course,Curso,Código del programa/curso matriculado
-Daytime/evening attendance,Asistencia diurna/nocturna,"1 = diurna, 0 = nocturna"
-Previous qualification,Calificación previa (nivel),"Nivel educativo previo (secundaria, licenciatura, máster, doctorado, etc.)"
-Previous qualification (grade),Calificación previa (nota),Nota de la calificación previa (entre 0 y 200)
-Nacionality,Nacionalidad,"Código de nacionalidad (p. ej., 1 portugués, 41 brasileño, 101 mexicano, etc.)"
-Mother's qualification,Nivel educativo de la madre,"Nivel de estudios de la madre (secundaria, superior, cursos técnicos, etc.)"
-Father's qualification,Nivel educativo del padre,"Nivel de estudios del padre (secundaria, superior, cursos técnicos, etc.)"
-Mother's occupation,Ocupación de la madre,Categoría ocupacional de la madre
-Father's occupation,Ocupación del padre,Categoría ocupacional del padre
-Admission grade,Nota de admisión,Nota de ingreso a la institución (0–200)
-Displaced,Desplazado,"Estudiante desplazado de su residencia habitual (1 sí, 0 no)"
-Educational special needs,Necesidades educativas especiales,"Indicador de necesidades educativas especiales (1 sí, 0 no)"
-Debtor,Deudor,"Estudiante con deudas registradas (1 sí, 0 no)"
-Tuition fees up to date,Cuotas al corriente,"Pago de colegiatura al día (1 sí, 0 no)"
-Gender,Género,"1 = masculino, 0 = femenino"
-Scholarship holder,Becario,"Beneficiario de beca (1 sí, 0 no)"
-Age at enrollment,Edad al inscribirse,Edad del estudiante al momento de la inscripción
-International,Internacional,"1 sí, 0 no"
-Curricular units 1st sem (credited),Unid. curriculares 1er sem (acreditadas),Número de unidades curriculares acreditadas en el 1er semestre
-Curricular units 1st sem (enrolled),Unid. curriculares 1er sem (inscritas),Número de unidades curriculares inscritas en el 1er semestre
-Curricular units 1st sem (evaluations),Unid. curriculares 1er sem (evaluaciones),Número de evaluaciones realizadas en el 1er semestre
-Curricular units 1st sem (approved),Unid. curriculares 1er sem (aprobadas),Número de unidades curriculares aprobadas en el 1er semestre
-Curricular units 1st sem (grade),Promedio 1er semestre,Promedio de notas en el 1er semestre (0–20)
-Curricular units 1st sem (without evaluations),Unid. curriculares 1er sem (sin evaluación),Número de unidades curriculares sin evaluación en el 1er semestre
-Curricular units 2nd sem (credited),Unid. curriculares 2do sem (acreditadas),Número de unidades curriculares acreditadas en el 2º semestre
-Curricular units 2nd sem (enrolled),Unid. curriculares 2do sem (inscritas),Número de unidades curriculares inscritas en el 2º semestre
-Curricular units 2nd sem (evaluations),Unid. curriculares 2do sem (evaluaciones),Número de evaluaciones realizadas en el 2º semestre
-Curricular units 2nd sem (approved),Unid. curriculares 2do sem (aprobadas),Número de unidades curriculares aprobadas en el 2º semestre
-Curricular units 2nd sem (grade),Promedio 2º semestre,Promedio de notas en el 2º semestre (0–20)
-Curricular units 2nd sem (without evaluations),Unid. curriculares 2do sem (sin evaluación),Número de unidades curriculares sin evaluación en el 2º semestre
-Unemployment rate,Tasa de desempleo,Tasa de desempleo del periodo
-Inflation rate,Tasa de inflación,Tasa de inflación del periodo
-GDP,PIB,Producto Interno Bruto (indicador macroeconómico)
-Target,Objetivo,Estado al final del curso: Dropout / Enrolled / Graduate
+No.,Variable Original,Descripción,Tipo de Dato,Unidades
+1,Marital status,Estado civil del estudiante,Categórica,
+2,Application mode,Modo/canal de aplicación,Categórica,
+3,Application order,Orden de aplicación (preferencia),Numérica entera,
+4,Course,Curso/programa matriculado,Categórica,
+5,Daytime/evening attendance,Régimen: diurno/nocturno,Categórica binaria,
+6,Previous qualification,Nivel de estudios previos,Categórica,
+7,Previous qualification (grade),Nota de la calificación previa,Numérica continua,0–200 puntos
+8,Nacionality,Nacionalidad del estudiante,Categórica,
+9,Mother's qualification,Nivel educativo de la madre,Categórica,
+10,Father's qualification,Nivel educativo del padre,Categórica,
+11,Mother's occupation,Ocupación de la madre,Categórica,
+12,Father's occupation,Ocupación del padre,Categórica,
+13,Admission grade,Nota de admisión al curso,Numérica continua,0–200 puntos
+14,Displaced,Estudiante desplazado de residencia,Categórica binaria,
+15,Educational special needs,Necesidades educativas especiales,Categórica binaria,
+16,Debtor,Condición de deudor,Categórica binaria,
+17,Tuition fees up to date,Pago de colegiatura al día,Categórica binaria,
+18,Gender,Sexo del estudiante,Categórica binaria,
+19,Scholarship holder,Estudiante con beca,Categórica binaria,
+20,Age at enrollment,Edad al inscribirse,Numérica entera,años
+21,International,Condición internacional,Categórica binaria,
+22,Curricular units 1st sem (credited),Unidades curriculares acreditadas 1er semestre,Numérica entera,conteo
+23,Curricular units 1st sem (enrolled),Unidades curriculares inscritas 1er semestre,Numérica entera,conteo
+24,Curricular units 1st sem (evaluations),Número de evaluaciones 1er semestre,Numérica entera,conteo
+25,Curricular units 1st sem (approved),Unidades curriculares aprobadas 1er semestre,Numérica entera,conteo
+26,Curricular units 1st sem (grade),Promedio de calificaciones 1er semestre,Numérica continua,0–20 puntos
+27,Curricular units 1st sem (without evaluations),Unidades curriculares sin evaluación 1er semestre,Numérica entera,conteo
+28,Curricular units 2nd sem (credited),Unidades curriculares acreditadas 2º semestre,Numérica entera,conteo
+29,Curricular units 2nd sem (enrolled),Unidades curriculares inscritas 2º semestre,Numérica entera,conteo
+30,Curricular units 2nd sem (evaluations),Número de evaluaciones 2º semestre,Numérica entera,conteo
+31,Curricular units 2nd sem (approved),Unidades curriculares aprobadas 2º semestre,Numérica entera,conteo
+32,Curricular units 2nd sem (grade),Promedio de calificaciones 2º semestre,Numérica continua,0–20 puntos
+33,Curricular units 2nd sem (without evaluations),Unidades curriculares sin evaluación 2º semestre,Numérica entera,conteo
+34,Unemployment rate,Tasa de desempleo en el periodo,Numérica continua,%
+35,Inflation rate,Tasa de inflación en el periodo,Numérica continua,%
+36,GDP,Producto Interno Bruto,Numérica continua,€ o índice macroeconómico
+37,Target,"Resultado final: Dropout, Enrolled, Graduate",Categórica multiclase,
